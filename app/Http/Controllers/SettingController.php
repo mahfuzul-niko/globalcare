@@ -136,9 +136,9 @@ class SettingController extends Controller
             'name' => 'required',
             'phone' => 'required',
             'address' => 'required',
-            'logo_color' => 'required',
-            'primary_color' => 'required',
-            'secondary_color' => 'required',
+            // 'logo_color' => 'required',
+            // 'primary_color' => 'required',
+            // 'secondary_color' => 'required',
         ]);
 
 

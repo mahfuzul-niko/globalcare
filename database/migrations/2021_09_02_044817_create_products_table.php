@@ -20,7 +20,7 @@ class CreateProductsTable extends Migration
             $table->integer('category_id')->nullable()->index();
             $table->integer('sub_category_id')->nullable()->index();
             $table->string('purchase_price')->nullable();
-            $table->double('price');
+            $table->double('price')->nullable();
             $table->string('discount_type')->nullable()->index();
             $table->double('discount_amount')->nullable();
             $table->integer('current_stock')->default(0);

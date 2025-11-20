@@ -53,11 +53,11 @@ class WishlistController extends Controller
         $wishlist = Wishlist::find($id);
         if (!is_null($wishlist)) {
             $wishlist->delete();
-            Alert::success('Product removed from wishlist', '');
+            // Alert::success('Product removed from wishlist', '');
             return back();
         }
         else{
-            Alert::error('Something went wrong!', '');
+            // Alert::error('Something went wrong!', '');
             return back();
         }
     }

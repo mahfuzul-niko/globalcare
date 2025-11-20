@@ -1,5 +1,9 @@
 <?php
 
+use App\Models\District;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SslCommerzPaymentController;
@@ -93,6 +97,7 @@ Route::get('/remove-coupon', [App\Http\Controllers\CartController::class, 'remov
 // Order routes
 Route::post('/order-create', [App\Http\Controllers\PageController::class, 'order_create'])->name('order.create');
 Route::get('/order-complete/{code}', [App\Http\Controllers\PageController::class, 'order_complete'])->name('order.complete');
+Route::get('/order-print/{id}', [App\Http\Controllers\PageController::class, 'order_print'])->name('order.print');
 Route::get('/track-order', [App\Http\Controllers\PageController::class, 'order_track'])->name('order.track');
 Route::get('/track-order-status', [App\Http\Controllers\PageController::class, 'order_track_result'])->name('order.track.result');
 
@@ -435,7 +440,23 @@ Route::group(['prefix' => '/home', 'middleware' => ['auth', 'verified', 'adminAu
 
 
 });
-Route::get('/test', function () {
-	
-	return view('global.index');
+Route::get('/test-0', function () {
+	$id = 5;
+
+	$product = Product::find($id);
+	if (!is_null($product)) {
+		$similar_products = Product::where('category_id', $product->category_id)->where('id', '<>', $product->id)->inRandomOrder()->limit(10)->get();
+		// return view('pages.single-product', compact('product', 'similar_products'));
+		//return 0;
+		return view('global.pages.single-product', compact('product', 'similar_products'));
+	} else {
+		session()->flash('error', 'Page Not Found');
+		return back();
+	}
 });
+Route::get('/test', function () {
+
+
+	return view('global.pages.page');
+
+})->name('global.page');

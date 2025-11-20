@@ -45,7 +45,6 @@
                             <div id="product_grid" class="tab_pane active show">
                                 <div class="product__section--inner product__grid--inner">
                                     <div class="row row-cols-xl-4 row-cols-lg-3 row-cols-md-3 row-cols-2 mb--n30" id="product_body">
-                                        
                                     </div>
                                     <div class="row mt-3" id="loading_div"></div>
                                     <div class="row mb-5 text-center mt-3" id="load_more_div" style="display: none;">

@@ -18,7 +18,6 @@ class UserTableSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'name' => 'Admin User',
-              
                 'phone' => '1234567890',
                 'type' => 1,
                 'email' => 'admin@gmail.com',

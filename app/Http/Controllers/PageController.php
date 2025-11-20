@@ -68,32 +68,43 @@ class PageController extends Controller
         //$top_sales = Product::where('is_active', 1)->orderBy('sold_qty', 'DESC')->limit(3)->get();
 
         $sliders = Slider::where('is_active', 1)->orderBy('serial_number', 'ASC')->get();
+        // dd($sliders);
         $sliderSideBanner = SliderSideBanner::where('is_active', 1)->orderBy('serial_number', 'ASC')->take(2)->get();
+        $brands = Brand::where('is_active', 1)->orderBy('position', 'ASC')->get();
         $featured_categories = Category::where('is_featured', 1)->orderBy('position', 'ASC')->get(['id', 'title', 'image']);
         //$todays_deals = Product::where(['is_active'=>1, 'todays_deal'=>1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
-        $featured_products = Product::where(['is_active'=>1, 'is_featured'=>1])->orderBy('id','DESC')->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
-        $trending_products = Product::orderBy('id', 'DESC')->where(['is_active'=>1, 'is_tranding'=>1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
+        $featured_products = Product::where(['is_active' => 1, 'is_featured' => 1])->orderBy('id', 'DESC')->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
+        $trending_products = Product::orderBy('id', 'DESC')->where(['is_active' => 1, 'is_tranding' => 1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         //$featured_brands = Brand::where(['is_featured'=>1])->orderBy('position', 'ASC')->get();
-        $blogs = Blog::where('type','blog')->orderBy('id', 'DESC')->limit(4)->get(['id', 'title', 'image', 'created_at']);
-        return view('user.index', compact('trending_products', 'featured_categories', 'sliders','sliderSideBanner','featured_products','blogs'));
+        $blogs = Blog::where('type', 'blog')->orderBy('id', 'DESC')->limit(4)->get(['id', 'title', 'image', 'created_at']);
+        return view('global.index', compact('trending_products', 'featured_categories', 'sliders', 'brands', 'sliderSideBanner', 'featured_products', 'blogs'));
         //return view('pages.index', compact('products', 'categories', 'featured_categories', 'deals', 'random_products', 'sliders', 'page', 'top_sales'));
 
     }
 
     public function products(Request $request)
     {
-        $min_price = ProductStocks::min('price');
-        $max_price = ProductStocks::max('price');
-        $request_category = $request->category_id;
-        $request_brand = $request->brand_id;
+        // $min_price = ProductStocks::min('price');
+        // $max_price = ProductStocks::max('price');
+        $category_id = $request->category_id;
+        $category_title = Category::find($category_id)->title ?? "All Products";
 
-        $categories = Category::where('parent_id', 0)->orderBy('position', 'ASC')->get();
-        $brands = Brand::orderBy('position', 'ASC')->get();
 
-        return view('user.pages.shop', compact('categories', 'brands', 'request_category', 'request_brand', 'min_price', 'max_price'));
+        $products = Product::query()
+            ->where('is_active', 1)
+            ->when($category_id, function ($q) use ($category_id) {
+                $q->whereHas('categories', function ($q2) use ($category_id) {
+                    $q2->where('category_id', $category_id);
+                });
+            })
+            ->orderByDesc('id')
+            ->get();
+        // dd($products);
+        return view('global.pages.shop', compact('products', 'category_title'));
     }
 
-    public function shop_products_data(Request $request) {
+    public function shop_products_data(Request $request)
+    {
         //return "hello";
 
         $lastID = $request->lastID;
@@ -103,67 +114,61 @@ class PageController extends Controller
         $updatedlastID = 0;
         $output = '';
 
-        if(empty($category_id) && empty($brand_array)) {// nothing is active
+        if (empty($category_id) && empty($brand_array)) {// nothing is active
             $products = Product::where('is_active', 1)->where('id', '<', $lastID)->orderBy('id', 'DESC')->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
-        }
-        else if(!empty($category_id) && empty($brand_info)) { //only category is active.
+        } else if (!empty($category_id) && empty($brand_info)) { //only category is active.
 
             $category_info = Category::find($category_id);
             $categories_id = array($category_id);
-            if(count($category_info->child) > 0) {
-                foreach($category_info->child as $sub_category) {
-                    if(count(optional($sub_category)->child) > 0) {
-                        foreach($sub_category->child as $sub_sub_category) {
+            if (count($category_info->child) > 0) {
+                foreach ($category_info->child as $sub_category) {
+                    if (count(optional($sub_category)->child) > 0) {
+                        foreach ($sub_category->child as $sub_sub_category) {
                             array_push($categories_id, optional($sub_sub_category)->id);
                         }
-                    }
-                    else {
+                    } else {
                         array_push($categories_id, optional($sub_category)->id);
                     }
                 }
             }
 
             $products = Product::join('product_with_categories', 'product_with_categories.product_id', '=', 'products.id')
-                    ->where('products.is_active', 1)
-                    ->whereIn('product_with_categories.category_id', $categories_id)->where('product_with_categories.id', '<', $lastID)->orderBy('product_with_categories.id', 'DESC')
-              		->get(['products.id', 'products.discount_type', 'products.discount_amount', 'products.type', 'products.title', 'products.thumbnail_image', 'product_with_categories.category_id', 'product_with_categories.product_id']);
+                ->where('products.is_active', 1)
+                ->whereIn('product_with_categories.category_id', $categories_id)->where('product_with_categories.id', '<', $lastID)->orderBy('product_with_categories.id', 'DESC')
+                ->get(['products.id', 'products.discount_type', 'products.discount_amount', 'products.type', 'products.title', 'products.thumbnail_image', 'product_with_categories.category_id', 'product_with_categories.product_id']);
 
 
             //$products = Product::where('is_active', 1)->whereIn('category_id', $categories_id)->where('id', '<', $lastID)->orderBy('id', 'DESC')->limit(20)->get();
-        }
-        else if(!empty($category_id) && !empty($brand_info)) { // category & brand both is active.
+        } else if (!empty($category_id) && !empty($brand_info)) { // category & brand both is active.
             $category_info = Category::find($category_id);
             $categories_id = array($category_id);
-            if(count($category_info->child) > 0) {
-                foreach($category_info->child as $sub_category) {
-                    if(count(optional($sub_category)->child) > 0) {
-                        foreach($sub_category->child as $sub_sub_category) {
+            if (count($category_info->child) > 0) {
+                foreach ($category_info->child as $sub_category) {
+                    if (count(optional($sub_category)->child) > 0) {
+                        foreach ($sub_category->child as $sub_sub_category) {
                             array_push($categories_id, optional($sub_sub_category)->id);
                         }
-                    }
-                    else {
+                    } else {
                         array_push($categories_id, optional($sub_category)->id);
                     }
                 }
             }
             $products = Product::where('is_active', 1)->whereIn('category_id', $categories_id)->whereIn('brand_id', [$brand_array])->where('id', '<', $lastID)->orderBy('id', 'DESC')->get();
-        }
-        else if(empty($category_id) && !empty($brand_array)) { //Brand is active.
+        } else if (empty($category_id) && !empty($brand_array)) { //Brand is active.
             $products = Product::where('is_active', 1)->whereIn('brand_id', [$brand_array])->where('id', '<', $lastID)->orderBy('id', 'DESC')->get();
         }
 
         if ($products->isNotEmpty()) {
             $noMorePSts = 'no';
             $displayedProducts = [];
-            foreach($products as $product) {
+            foreach ($products as $product) {
                 if (!in_array($product->id, $displayedProducts)) {
                     $output .= view('user.partials.product', compact('product'))->render();
                     $updatedlastID = $product->id;
                     $displayedProducts[] = $product->id;
                 }
             }
-        }
-        else {
+        } else {
             $noMorePSts = 'yes';
             $output .= '<div class="col-md-12 col my-5" id="load_more" style="width: 100% !important;">
                             <div style="text-align: center;" class="text-center"><h2><b>Sorry, No Products Found</b></h2></div>
@@ -181,13 +186,11 @@ class PageController extends Controller
     public function shop_products($slug)
     {
         $products = Product::where('is_active', 1)->orderBy('id', 'DESC')->select(['id', 'discount_type', 'type', 'title', 'thumbnail_image']);
-        if($slug == 'best-selling') {
+        if ($slug == 'best-selling') {
             $products = $products->orderBy('sold_qty', 'DESC');
-        }
-        else if($slug == 'featured') {
+        } else if ($slug == 'featured') {
             $products = $products->where('is_featured', 1);
-        }
-        else if($slug == 'traending-now') {
+        } else if ($slug == 'traending-now') {
             $products = $products->where('is_tranding', 1);
         }
 
@@ -212,14 +215,14 @@ class PageController extends Controller
             // return view('pages.single-product', compact('product', 'similar_products'));
             //return 0;
             return view('user.pages.single-product', compact('product', 'similar_products'));
-        }
-        else{
-            session()->flash('error','Page Not Found');
+        } else {
+            session()->flash('error', 'Page Not Found');
             return back();
         }
     }
 
-    public function product_quick_view(Request $request) {
+    public function product_quick_view(Request $request)
+    {
         $id = $request->pruduct_id;
         $product = Product::find($id);
         $output = '';
@@ -228,8 +231,9 @@ class PageController extends Controller
 
     }
 
-    public function product_variation_check(Request $request) {
-        
+    public function product_variation_check(Request $request)
+    {
+
         $color_info = $request->color_info;
         $color_id = $request->color;
         $attribute_variation = $request->attribute_variation;
@@ -243,75 +247,73 @@ class PageController extends Controller
 
         $onlyColorstatus = 0;
         $checkMultiTypeVariation = ProductStocks::where('product_id', $product_id)->where('variant', '!=', NULL)->first(['id']);
-        if(is_null($checkMultiTypeVariation)) {
+        if (is_null($checkMultiTypeVariation)) {
             $onlyColorstatus = 1;
         }
 
         $info = ProductStocks::where('product_id', $product_id);
-        
-        if($onlyColorstatus == 0) {
+
+        if ($onlyColorstatus == 0) {
             $info = $info->where('id', $attribute_variation);
         }
 
-        if($color_info == 1) {
+        if ($color_info == 1) {
             $info = $info->where('color', $color_id);
         }
 
         $info = $info->where('is_active', 1);
         $info = $info->first();
 
-        if(is_null($info) && $color_info == 1) {
+        if (is_null($info) && $color_info == 1) {
             $color_dependent_variation_status = 1;
             $color_variation_info = ProductStocks::where('color', $color_id)->where('product_id', $product_id)->where('is_active', 1)->get();
-            if(count($color_variation_info) > 0) {
-                foreach($color_variation_info as $variation) {
-                    $color_dependent_variation .= '<input id="attribute_id_'.$variation->id.'" onchange="select_variation('.$product_id.')" value="'.$variation->id.'" name="attribute_variation" type="radio" ><label class="variant__size--value" for="attribute_id_'.$variation->id.'">'.$variation->variant_output.'</label>';
+            if (count($color_variation_info) > 0) {
+                foreach ($color_variation_info as $variation) {
+                    $color_dependent_variation .= '<input id="attribute_id_' . $variation->id . '" onchange="select_variation(' . $product_id . ')" value="' . $variation->id . '" name="attribute_variation" type="radio" ><label class="variant__size--value" for="attribute_id_' . $variation->id . '">' . $variation->variant_output . '</label>';
                 }
-            }
-            else {
+            } else {
                 $color_dependent_variation .= '';
             }
         }
 
         $product_info = Product::where('id', $product_id)->first(['unit_type', 'discount_type', 'discount_amount']);
 
-        if(!is_null($info)) {
+        if (!is_null($info)) {
             $variation_status = 1;
 
-            
 
-            if($product_info->discount_type <> 'no') {
-                if($product_info->discount_type == 'flat') {
+
+            if ($product_info->discount_type <> 'no') {
+                if ($product_info->discount_type == 'flat') {
                     $old_price = $info->price - optional($product_info)->discount_amount;
-                }
-                else if($product_info->discount_type == 'percentage') {
-                    $discount_amount_tk = (optional($product_info)->discount_amount * $info->price)/100;
-                    $old_price =  $info->price - $discount_amount_tk;
+                } else if ($product_info->discount_type == 'percentage') {
+                    $discount_amount_tk = (optional($product_info)->discount_amount * $info->price) / 100;
+                    $old_price = $info->price - $discount_amount_tk;
                 }
                 $price_info .= '
-                <span class="current__price">৳ '.number_format($old_price, 2).'</span>
+                <span class="current__price">৳ ' . number_format($old_price, 2) . '</span>
                 <span class="price__divided"></span>
                 ';
-                $price_info .= '<span class="old__price">৳ '.number_format($info->price, 2).'</span>';
-            }else{
-                $price_info .= '<span class="current__price">৳ '.number_format($info->price, 2).'</span>';
+                $price_info .= '<span class="old__price">৳ ' . number_format($info->price, 2) . '</span>';
+            } else {
+                $price_info .= '<span class="current__price">৳ ' . number_format($info->price, 2) . '</span>';
             }
         }
 
         $image = optional($info)->image;
 
         return response()->json([
-            'color_dependent_variation'=>$color_dependent_variation,
-            'color_dependent_variation_status'=>$color_dependent_variation_status,
-            'id'=>optional($info)->id,
-            'price'=>optional($info)->price,
-            'qty'=>optional($info)->qty,
-            'image_status'=>$image_status,
-            'image'=>$image,
-            'variation_status'=>$variation_status,
-            'id'=>optional($info)->id,
-            'unit_type'=>optional($product_info)->unit_type,
-            'price_info'=>$price_info,
+            'color_dependent_variation' => $color_dependent_variation,
+            'color_dependent_variation_status' => $color_dependent_variation_status,
+            'id' => optional($info)->id,
+            'price' => optional($info)->price,
+            'qty' => optional($info)->qty,
+            'image_status' => $image_status,
+            'image' => $image,
+            'variation_status' => $variation_status,
+            'id' => optional($info)->id,
+            'unit_type' => optional($product_info)->unit_type,
+            'price_info' => $price_info,
         ]);
 
     }
@@ -328,9 +330,8 @@ class PageController extends Controller
         $products = Product::where('category_id', $id)->orWhere('sub_category_id', $id)->where('is_active', 1)->paginate(30);
         if (!is_null($category)) {
             return view('pages.category-product', compact('category', 'products'));
-        }
-        else{
-            session()->flash('error','Page Not Found');
+        } else {
+            session()->flash('error', 'Page Not Found');
             return back();
         }
     }
@@ -341,25 +342,24 @@ class PageController extends Controller
         $products = Product::where('brand_id', $id)->where('is_active', 1)->paginate(30);
         if (!is_null($brand)) {
             return view('pages.brand-product', compact('brand', 'products'));
-        }
-        else{
-            session()->flash('error','Page Not Found');
+        } else {
+            session()->flash('error', 'Page Not Found');
             return back();
         }
     }
 
     public function search(Request $request)
     {
-          $query = $request->get('search');
-          $filterResult = Product::where('title', 'LIKE', '%'. $query. '%')
-          ->orWhere('description', 'LIKE', '%'. $query. '%')
-          ->where('is_active', 1)
-          ->pluck('title');
-          // $filterResult = Product::where('title', 'LIKE', '%'. $query. '%')
-          // ->orWhere('description', 'LIKE', '%'. $query. '%')
-          // ->where('is_active', 1)
-          // ->get();
-          return $filterResult;
+        $query = $request->get('search');
+        $filterResult = Product::where('title', 'LIKE', '%' . $query . '%')
+            ->orWhere('description', 'LIKE', '%' . $query . '%')
+            ->where('is_active', 1)
+            ->pluck('title');
+        // $filterResult = Product::where('title', 'LIKE', '%'. $query. '%')
+        // ->orWhere('description', 'LIKE', '%'. $query. '%')
+        // ->where('is_active', 1)
+        // ->get();
+        return $filterResult;
     }
 
     public function ajax_product_search(Request $request)
@@ -367,70 +367,71 @@ class PageController extends Controller
         $input = $request->input;
         $category_id = $request->category_id;
         $output = '';
-        if($category_id == 'all') {
-            $products = Product::where('title', 'LIKE', '%'. $input. '%')->orWhere('description', 'LIKE', '%'. $input. '%')->limit(10)->get(['id', 'title', 'thumbnail_image']);
-        }
-        else {
+        if ($category_id == 'all') {
+            $products = Product::where('title', 'LIKE', '%' . $input . '%')->orWhere('description', 'LIKE', '%' . $input . '%')->limit(10)->get(['id', 'title', 'thumbnail_image']);
+        } else {
             $products = Product::where('category_id', $category_id)
-                                ->where(function ($query) use ($input) {
-                                    $query->where('title', 'LIKE', '%'. $input. '%')
-                                        ->orWhere('description', 'LIKE', '%'. $input. '%');
-                                })
-                                ->limit(10)->get(['id', 'title', 'thumbnail_image']);
+                ->where(function ($query) use ($input) {
+                    $query->where('title', 'LIKE', '%' . $input . '%')
+                        ->orWhere('description', 'LIKE', '%' . $input . '%');
+                })
+                ->limit(10)->get(['id', 'title', 'thumbnail_image']);
         }
 
-        if($input <> '') {
-            if(count($products) > 0) {
-                foreach($products as $product) {
+        if ($input <> '') {
+            if (count($products) > 0) {
+                foreach ($products as $product) {
                     $output .= '<div class="col-md-12">
                                     <div class="shadow border m-2 rounded">
-                                        <a class="widget__categories--sub__menu--link d-flex align-items-center" href="'.route('single.product', [$product->id, Str::slug($product->title)]).'">
-                                            <img style="width: 7.8rem !important;" class="widget__categories--sub__menu--img p-1 rounded" src="'.asset('images/product/'.$product->thumbnail_image).'" alt="categories-img">
-                                            <span class="widget__categories--sub__menu--text">'.$product->title.'</span>
+                                        <a class="widget__categories--sub__menu--link d-flex align-items-center" href="' . route('single.product', [$product->id, Str::slug($product->title)]) . '">
+                                            <img style="width: 7.8rem !important;" class="widget__categories--sub__menu--img p-1 rounded" src="' . asset('images/product/' . $product->thumbnail_image) . '" alt="categories-img">
+                                            <span class="widget__categories--sub__menu--text">' . $product->title . '</span>
                                         </a>
                                     </div>
                                 </div>';
                 }
-            }
-            else {
+            } else {
                 $output .= '<div class="col-md-12">
                                 <div class="m-2 rounded text-center">
                                     <h2 class="py-3 text-center">No Products Found!!!</h2>
-                                    <a class="continue__shipping--btn primary__btn rounded-pill mb-3" href="'.route('products').'">View Shop</a>
+                                    <a class="continue__shipping--btn primary__btn rounded-pill mb-3" href="' . route('products') . '">View Shop</a>
                                 </div>
                             </div>';
             }
-        }
-        else {
+        } else {
 
         }
 
         return Response()->json($output);
     }
 
-    public function ajax_featured_products() {
+    public function ajax_featured_products()
+    {
         $output = '';
-        $featured_products = Product::where(['is_active'=>1, 'is_featured'=>1])->inRandomOrder()->limit(10)->get();
+        $featured_products = Product::where(['is_active' => 1, 'is_featured' => 1])->inRandomOrder()->limit(10)->get();
         $view = view('user.partials.featured_products', compact('featured_products'))->render();
         return Response()->json($view);
     }
 
-    public function ajax_best_selling_products() {
+    public function ajax_best_selling_products()
+    {
         $output = '';
-        $best_selling_products = Product::orderBy('sold_qty', 'DESC')->where(['is_active'=>1])->limit(10)->get();
+        $best_selling_products = Product::orderBy('sold_qty', 'DESC')->where(['is_active' => 1])->limit(10)->get();
         $view = view('user.partials.ajax_best_selling_products', compact('best_selling_products'))->render();
         return Response()->json($view);
     }
 
-    public function ajax_flash_sale_offer() {
-        $flash_sale_offer = FlashSaleOffer::where(['is_active'=>1])->first();
+    public function ajax_flash_sale_offer()
+    {
+        $flash_sale_offer = FlashSaleOffer::where(['is_active' => 1])->first();
         $view = view('user.partials.home_page_flash_sale', compact('flash_sale_offer'))->render();
         return Response()->json($view);
     }
 
-    public function ajax_flash_sale_offer_details($id, $slug) {
+    public function ajax_flash_sale_offer_details($id, $slug)
+    {
         $flash_sale_offer = FlashSaleOffer::find($id);
-        if(is_null($flash_sale_offer)) {
+        if (is_null($flash_sale_offer)) {
             return Redirect()->back()->with('error', 'No Offer Found!');
         }
 
@@ -444,7 +445,7 @@ class PageController extends Controller
     public function search_result(Request $request)
     {
         $query = $request->search;
-        $products = Product::where('title', 'LIKE', '%'. $query. '%')->orWhere('description', 'LIKE', '%'. $query. '%')->get();
+        $products = Product::where('title', 'LIKE', '%' . $query . '%')->orWhere('description', 'LIKE', '%' . $query . '%')->get();
         return view('pages.search-result', compact('products'));
 
     }
@@ -457,14 +458,11 @@ class PageController extends Controller
         $max_price = $request->max_price;
         if ($category_id != 'all' && $brand_id != 'all') {
             $products = Product::where('category_id', $category_id)->where('brand_id', $brand_id)->whereBetween('price', [$min_price, $max_price])->where('is_active', 1)->get();
-        }
-        else if ($category_id != 'all' && $brand_id == 'all') {
+        } else if ($category_id != 'all' && $brand_id == 'all') {
             $products = Product::where('category_id', $category_id)->whereBetween('price', [$min_price, $max_price])->where('is_active', 1)->get();
-        }
-        else if ($category_id == 'all' && $brand_id != 'all') {
+        } else if ($category_id == 'all' && $brand_id != 'all') {
             $products = Product::where('brand_id', $brand_id)->whereBetween('price', [$min_price, $max_price])->where('is_active', 1)->get();
-        }
-        else{
+        } else {
             $products = Product::where('is_active', 1)->whereBetween('price', [$min_price, $max_price])->get();
         }
 
@@ -475,57 +473,52 @@ class PageController extends Controller
                 <div class="product-wrap product text-center" style="">
                     <div style="border: 1px solid blue;padding-bottom: 15px;margin: 0px 5px;">
                     <figure class="product-media">
-                        <a href="'. route('single.product', [$product->id, Str::slug($product->title)]) .'">
-                            <img src="'. asset('images/product/'. $product->image) .'" alt="Product"
+                        <a href="' . route('single.product', [$product->id, Str::slug($product->title)]) . '">
+                            <img src="' . asset('images/product/' . $product->image) . '" alt="Product"
                                 width="216" height="243" />
                         </a>
                         <div class="product-action-vertical">
-                            <a onclick="addToCart('. $product->id .')" class="btn-product-icon w-icon-cart peoduct_cart"
+                            <a onclick="addToCart(' . $product->id . ')" class="btn-product-icon w-icon-cart peoduct_cart"
                                 title="Add to cart"></a>
-                            <a onclick="addToWishlist('. $product->id .')" class="btn-product-icon w-icon-heart peoduct_cart"
+                            <a onclick="addToWishlist(' . $product->id . ')" class="btn-product-icon w-icon-heart peoduct_cart"
                                 title="Add to wishlist"></a>
 
                         </div>
                     </figure>
                     <div class="product-details">
-                        <h4 class="product-name"><a href="'. route('single.product', [$product->id, Str::slug($product->title)]) .'">'. $product->title .'</a>
+                        <h4 class="product-name"><a href="' . route('single.product', [$product->id, Str::slug($product->title)]) . '">' . $product->title . '</a>
                         </h4>
-                        <p>'. $product->weight . $product->unit.'</p>
+                        <p>' . $product->weight . $product->unit . '</p>
                         <div class="product-price">';
-                            if($product->type == 'single'){
-                                if ($product->is_sale == 1) {
-                                    $product_filtered .= '<ins class="new-price">'. env('CURRENCY') .  $product->discount_price . env('UAE_CURRENCY') .'</ins><del class="old-price">'. env('CURRENCY') . $product->price . env('UAE_CURRENCY') .'</del>';
-                                }
-                                else{
-                                    $product_filtered .= '<ins class="new-price">'. env('CURRENCY') .  $product->price . env('UAE_CURRENCY') .'</ins>';
-                                }
-                            }
-                            else{
-                                if(count($product->variation) == 1){
+            if ($product->type == 'single') {
+                if ($product->is_sale == 1) {
+                    $product_filtered .= '<ins class="new-price">' . env('CURRENCY') . $product->discount_price . env('UAE_CURRENCY') . '</ins><del class="old-price">' . env('CURRENCY') . $product->price . env('UAE_CURRENCY') . '</del>';
+                } else {
+                    $product_filtered .= '<ins class="new-price">' . env('CURRENCY') . $product->price . env('UAE_CURRENCY') . '</ins>';
+                }
+            } else {
+                if (count($product->variation) == 1) {
 
-                                    $product_filtered .='<ins class="new-price">'. env('CURRENCY') . $product->variation->first()->price . env('UAE_CURRENCY') .'</ins>';
-                                }
-                                else{
-                                    $product_filtered .='<ins class="new-price">'. env('CURRENCY') . $product->variation->where('price', $product->variation->min('price'))->first()->price . env('UAE_CURRENCY') . '-' .  env('CURRENCY') . $product->variation->where('price', $product->variation->max('price'))->first()->price  .env('UAE_CURRENCY') .'</ins>';
-                                }
-                            }
-                        $product_filtered .='</div>
-                        <button onclick="addToCart('. $product->id .')" class="btn btn-primary added_to_cart_'. $product->id;
-                            if ( !is_null(Cart::content()->where('id', $product->id)->first())) {
-                                $product_filtered .= ' added_to_cart';
-                            }
-                            else{
-                                $product_filtered .= ' ';
-                            }
+                    $product_filtered .= '<ins class="new-price">' . env('CURRENCY') . $product->variation->first()->price . env('UAE_CURRENCY') . '</ins>';
+                } else {
+                    $product_filtered .= '<ins class="new-price">' . env('CURRENCY') . $product->variation->where('price', $product->variation->min('price'))->first()->price . env('UAE_CURRENCY') . '-' . env('CURRENCY') . $product->variation->where('price', $product->variation->max('price'))->first()->price . env('UAE_CURRENCY') . '</ins>';
+                }
+            }
+            $product_filtered .= '</div>
+                        <button onclick="addToCart(' . $product->id . ')" class="btn btn-primary added_to_cart_' . $product->id;
+            if (!is_null(Cart::content()->where('id', $product->id)->first())) {
+                $product_filtered .= ' added_to_cart';
+            } else {
+                $product_filtered .= ' ';
+            }
 
-                        $product_filtered .= '" id="">';
-                            if ( !is_null(Cart::content()->where('id', $product->id)->first())) {
-                                $product_filtered .= 'Added To Cart';
-                            }
-                            else{
-                                $product_filtered .= 'Add to Cart';
-                            }
-                    $product_filtered .= '</button></div>
+            $product_filtered .= '" id="">';
+            if (!is_null(Cart::content()->where('id', $product->id)->first())) {
+                $product_filtered .= 'Added To Cart';
+            } else {
+                $product_filtered .= 'Add to Cart';
+            }
+            $product_filtered .= '</button></div>
                     </div>
                 </div>
                         ';
@@ -584,7 +577,7 @@ class PageController extends Controller
             'email' => 'required|email',
         ]);
 
-        $subscriber = Subscriber::where('email',$request->email)->first();
+        $subscriber = Subscriber::where('email', $request->email)->first();
         if (is_null($subscriber)) {
             $subscriber = new Subscriber;
             $subscriber->email = $request->email;
@@ -592,8 +585,7 @@ class PageController extends Controller
 
             // Alert::success('Thanks, Welcome to our NEWSLETTER', '');
             return redirect()->back()->with('success', 'Thanks, Welcome to our NEWSLETTER');
-        }
-        else {
+        } else {
             // Alert::error('Thanks, You already subscribed us!', '');
             return redirect()->back()->with('success', 'Thanks, You already subscribed us!');
         }
@@ -603,24 +595,22 @@ class PageController extends Controller
     {
         if (Auth::check()) {
             $orders = Order::where('customer_id', Auth::id())->get();
-            return view('user.pages.customer.orders', compact('orders'));
-        }
-        else{
+            return view('global.pages.customer-orders', compact('orders'));
+        } else {
             return redirect()->route('index');
         }
     }
 
-    public function view_order($id) {
+    public function view_order($id)
+    {
         if (Auth::check()) {
             $order = Order::where('code', $id)->first();
             if (!is_null($order)) {
                 return $this->get_order_info($order->id);
+            } else {
+                return back()->with('error', 'Invalid order code!');
             }
-            else{
-                return back()->with('error','Invalid order code!');
-            }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
 
@@ -628,11 +618,10 @@ class PageController extends Controller
 
     public function my_wishlist()
     {
-        if(Auth::check()) {
+        if (Auth::check()) {
             $wishlists = Wishlist::where('customer_id', Auth::id())->get();
-            return view('user.pages.customer.wishlist', compact('wishlists'));
-        }
-        else {
+            return view('global.pages.customer-wishlist', compact('wishlists'));
+        } else {
             return redirect()->route('login')->with('error', 'You are not logged in!');
         }
 
@@ -643,15 +632,13 @@ class PageController extends Controller
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $orders = Order::where('customer_id', Auth::id())->get();
                 $wishlists = Wishlist::where('customer_id', Auth::id())->get();
-                return view('user.pages.customer.account', compact('orders', 'wishlists'));
+                return view('global.pages.customer-account', compact('orders', 'wishlists'));
                 //return view('pages.customer.account', compact('orders', 'wishlists'));
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -661,14 +648,12 @@ class PageController extends Controller
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $user_info = Auth::user();
                 $districts = District::orderBy('name', 'ASC')->get();
-                return view('user.pages.customer.customer_profile', compact('user_info', 'districts'));
+                return view('global.pages.customer_profile', compact('user_info', 'districts'));
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -678,14 +663,12 @@ class PageController extends Controller
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $user_info = Auth::user();
                 $orders = Order::where('customer_id', Auth::id())->where('order_status', 'delivered')->select(['code', 'id', 'created_at'])->paginate(10);
                 return view('user.pages.customer.review_index', compact('user_info', 'orders'));
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -695,38 +678,36 @@ class PageController extends Controller
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $user_info = Auth::user();
                 $order_product_info = OrderProduct::find($order_product_order_id);
-                if(is_null($order_product_info)) {
+                if (is_null($order_product_info)) {
                     return redirect()->back()->with('error', 'Order Product info not found');
                 }
 
                 $order_info = Order::where('customer_id', Auth::id())->where('code', $order_product_info->order_code)->first();
                 return view('user.pages.customer.write_review', compact('user_info', 'order_info', 'order_product_info'));
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
 
-    public function customer_reviews_submit(Request $request) {
+    public function customer_reviews_submit(Request $request)
+    {
 
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $user_info = Auth::user();
                 $order_product_info = OrderProduct::find($request->order_product_info_id);
-                if(is_null($order_product_info)) {
+                if (is_null($order_product_info)) {
                     return redirect()->back()->with('error', 'Order Product info not found');
                 }
 
-                $check_review = ProductsReviews::where(['order_product_id'=>$order_product_info->id, 'order_code'=>$order_product_info->order_code])->first(['id']);
-                if(!is_null($check_review)) {
+                $check_review = ProductsReviews::where(['order_product_id' => $order_product_info->id, 'order_code' => $order_product_info->order_code])->first(['id']);
+                if (!is_null($check_review)) {
                     return redirect()->back()->with('error', 'Review is already Exist!');
                 }
 
@@ -740,15 +721,13 @@ class PageController extends Controller
                 $new_review->created_at = now();
                 $status = $new_review->save();
 
-                if($status) {
+                if ($status) {
                     return Redirect()->route('customer.reviews')->with('success', 'Review Placed Successfully.');
-                }
-                else {
+                } else {
                     return redirect()->back()->with('error', 'Network Error! Please Try again.');
                 }
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -766,10 +745,10 @@ class PageController extends Controller
             $customer->address = $request->address;
 
             // image save
-            if ($request->image){
+            if ($request->image) {
                 $image = $request->file('image');
                 $img = time() . '.' . $image->getClientOriginalExtension();
-                $location = public_path('images/customer/'. $img);
+                $location = public_path('images/customer/' . $img);
                 Image::make($image)->save($location);
                 $customer->image = $img;
             }
@@ -785,8 +764,7 @@ class PageController extends Controller
 
             $customer->save();
             return redirect()->back()->with('success', 'Profile Updated!');
-        }
-        else{
+        } else {
             return redirect()->back()->with('error', 'Something went wrong!');
         }
     }
@@ -804,13 +782,11 @@ class PageController extends Controller
                 $user->save();
                 Alert::success('Password has been updated', '');
                 return back();
-            }
-            else {
+            } else {
                 Alert::error('Password do not match !', '');
                 return back();
             }
-        }
-        else{
+        } else {
             Alert::error('Your current password is wrong !', '');
             return back();
         }
@@ -821,13 +797,11 @@ class PageController extends Controller
         if (Auth::check()) {
             if (Auth::user()->type == 1) {
                 return redirect()->route('home');
-            }
-            else{
+            } else {
                 $wallet = Wallet::where('customer_id', Auth::id())->first();
                 return view('pages.customer.wallet', compact('wallet'));
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -848,23 +822,20 @@ class PageController extends Controller
                     $entry = new WalletEntry;
                     $entry->wallet_id = $wallet->id;
                     $entry->point_out = $point;
-                    $entry->cash_in = $point/$minimum_point;
+                    $entry->cash_in = $point / $minimum_point;
                     $entry->note = 'Point Conversion';
                     $entry->save();
                     Alert::success('Point Conversion Successful!');
                     return back();
-                }
-                else{
+                } else {
                     Alert::error('Minimum Point Not Matched');
                     return back();
                 }
-            }
-            else{
+            } else {
                 Alert::error('Walet Not Found!');
                 return back();
             }
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -887,8 +858,7 @@ class PageController extends Controller
             $payments = Payment::where('customer_id', Auth::id())->orderBy('id', 'DESC')->get();
             $coupons = Coupon::where('affiliate_id', Auth::id())->get();
             return view('pages.customer.affiliate-dashboard', compact('orders', 'referrals', 'payments', 'coupons'));
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -897,8 +867,8 @@ class PageController extends Controller
     {
         if (Auth::check()) {
             $validatedData = $request->validate([
-                    'request_amount' => 'required|numeric',
-                ]);
+                'request_amount' => 'required|numeric',
+            ]);
             $payment = new Payment;
             $payment->customer_id = Auth::id();
             $payment->request_amount = $request->request_amount;
@@ -906,8 +876,7 @@ class PageController extends Controller
             $payment->save();
             Alert::success('Your payment request has been submitted');
             return back();
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -942,8 +911,7 @@ class PageController extends Controller
 
             Alert::success('Coupon Added Successfully');
             return back();
-        }
-        else{
+        } else {
             return redirect()->route('index');
         }
     }
@@ -975,9 +943,8 @@ class PageController extends Controller
 
                 Alert::success('Coupon updated Successfully');
                 return back();
-            }
-            else {
-                session()->flash('error','Something went wrong!');
+            } else {
+                session()->flash('error', 'Something went wrong!');
                 return back();
             }
         }
@@ -991,13 +958,11 @@ class PageController extends Controller
                 $coupon->delete();
                 Alert::success('Coupon has been deleted');
                 return back();
-            }
-            else {
+            } else {
                 Alert::error('Something went wrong!');
                 return back();
             }
-        }
-        else {
+        } else {
             Alert::error('Something went wrong!');
             return back();
         }
@@ -1081,9 +1046,9 @@ class PageController extends Controller
         while (strlen($code) < 6) {
             $position = rand(0, $charactersNumber - 1);
             $character = $characters[$position];
-            $code = $code.$character;
+            $code = $code . $character;
         }
-        $code = date('y').'-'.$code;
+        $code = date('y') . '-' . $code;
 
         if (Order::where('code', $code)->exists()) {
             $this->generateUniqueCode();
@@ -1096,7 +1061,7 @@ class PageController extends Controller
 
     // public function order_create_old(Request $request)
     // {
-       
+
     //     $cart_info = Cart::content();
 
     //     if(count($cart_info) <= 0) { 
@@ -1110,7 +1075,7 @@ class PageController extends Controller
     //     $online_payment_mfs = $request->online_payment_mfs;
     //     $online_mfs_paymnet_number = $request->online_mfs_paymnet_number;
     //     $online_transaction_id = $request->online_transaction_id;
-        
+
     //     $total = Cart::subtotal();
 
     //     $order = new Order;
@@ -1172,8 +1137,8 @@ class PageController extends Controller
     //     $order->payment_status = 'unpaid';
     //     $order->total_payable = $total_payable;
     //     $order_status = $order->save();
-        
-        
+
+
     //     session()->put('grand_total', $total_payable);
 
     //     if($order_status) {
@@ -1234,14 +1199,14 @@ class PageController extends Controller
     //     }
 
     // }
-    
-    
+
+
     public function order_create(Request $request)
     {
-       
+
         $cart_info = Cart::content();
 
-        if(count($cart_info) <= 0) { 
+        if (count($cart_info) <= 0) {
             return Redirect()->route('products')->with('error', 'Your Cart is empty!');
         }
 
@@ -1252,7 +1217,7 @@ class PageController extends Controller
         $online_payment_mfs = $request->online_payment_mfs;
         $online_mfs_paymnet_number = $request->online_mfs_paymnet_number;
         $online_transaction_id = $request->online_transaction_id;
-        
+
         $total = Cart::subtotal();
 
         $order = new Order;
@@ -1264,39 +1229,36 @@ class PageController extends Controller
             //$order->coupon_code = 1;
             $discount = Session::get('coupon_discount');
             $order->coupon_discount_amount = $discount;
-        }
-        else {
+        } else {
             $order->coupon_status = 0;
         }
 
-        if($payment_type=='cod'){
-            if(env('DELIVERY_CHARGE_ADVANCED') == true){
+        if ($payment_type == 'cod') {
+            if (env('DELIVERY_CHARGE_ADVANCED') == true) {
                 $total_payable = ($total) - $discount;
-            }else{
+            } else {
                 $total_payable = ($total + $request->shipping_charge) - $discount;
             }
-        }else{
+        } else {
             $total_payable = ($total + $request->shipping_charge) - $discount;
         }
-        
 
-        if($payment_type == 'online_mfs') {
-            if($online_payment_mfs == '' || $online_mfs_paymnet_number == '') {
+
+        if ($payment_type == 'online_mfs') {
+            if ($online_payment_mfs == '' || $online_mfs_paymnet_number == '') {
                 return Redirect()->back()->with('error', 'Please setup payment number.');
             }
         }
 
-        if($payment_type == 'wallet') {
+        if ($payment_type == 'wallet') {
             $user_info = Auth::user();
-            if(!is_null($user_info)) {
-                if($user_info->wallet_amount >= $total_payable) {
+            if (!is_null($user_info)) {
+                if ($user_info->wallet_amount >= $total_payable) {
 
-                }
-                else {
+                } else {
                     return Redirect()->back()->with('error', 'Insufficient Wallet Amount!');
                 }
-            }
-            else {
+            } else {
                 return Redirect()->back()->with('error', 'Invalid user info!');
             }
             $order->payment_method = 'wallet';
@@ -1304,9 +1266,9 @@ class PageController extends Controller
 
         $order_count = Order::count('id');
         $count_plus = $order_count + 1;
-        $order_code = date("dmy").random_int(100, 999).sprintf('%06d', $count_plus);
+        $order_code = date("dmy") . random_int(100, 999) . sprintf('%06d', $count_plus);
         $order->code = $order_code; //$this->generateUniqueCode();
-        
+
         if (Auth::user()) {
             $order->customer_id = Auth::id();
         }
@@ -1322,12 +1284,12 @@ class PageController extends Controller
         $order->order_status = 'pending';
         $order->payment_status = 'unpaid';
         $order->total_payable = $total_payable;
-        $order_status = $order->save(); 
-        
-        
+        $order_status = $order->save();
+
+
         session()->put('order_code', $order_code);
 
-        if($order_status) {
+        if ($order_status) {
             foreach (Cart::content() as $cart) {
                 $order_product = new OrderProduct;
                 $order_product->order_code = $order_code;
@@ -1340,19 +1302,18 @@ class PageController extends Controller
             }
 
 
-            if($payment_type == 'cod') {
+            if ($payment_type == 'cod') {
                 $order->payment_method = 'cash on delivery';
                 $order->save();
                 /* DELIVERY_CHARGE_ADVANCED  */
-                if(env('DELIVERY_CHARGE_ADVANCED') == true){
-                    if(env('BKASH') == true){
+                if (env('DELIVERY_CHARGE_ADVANCED') == true) {
+                    if (env('BKASH') == true) {
                         session()->put('grand_total', $request->shipping_charge);
                         $bkashController = new BkashController();
                         return $bkashController->createPayment($request);
                     }
                 }
-            }
-            else if($payment_type == 'online_mfs') {
+            } else if ($payment_type == 'online_mfs') {
                 // return $payment_type;
                 $order->payment_method = 'Manula MFS';
                 $order->manual_mfs_account_name = $online_payment_mfs;
@@ -1360,16 +1321,14 @@ class PageController extends Controller
                 $order->manual_mfs_transaction_id = $online_transaction_id;
                 $order->payment_status = 'paid';
                 $order->save();
-            }
-            else if($payment_type == 'online') {
-                if(env('SSlCOMMERZ') == true){
-                    $request->request->add(['tran_id' => $order_code, 'value_a'=>'order_payment']);
+            } else if ($payment_type == 'online') {
+                if (env('SSlCOMMERZ') == true) {
+                    $request->request->add(['tran_id' => $order_code, 'value_a' => 'order_payment']);
                     $sslcommerz = new SslCommerzPaymentController;
                     return $sslcommerz->index($request);
                 }
-            }
-            else if($payment_type == 'bkash') {
-                if(env('BKASH') == true){
+            } else if ($payment_type == 'bkash') {
+                if (env('BKASH') == true) {
                     session()->put('grand_total', $total_payable);
                     $order->payment_method = 'bkash';
                     $order->save();
@@ -1377,8 +1336,7 @@ class PageController extends Controller
                     $bkashController = new BkashController();
                     return $bkashController->createPayment($request);
                 }
-            } 
-            else if($payment_type == 'wallet') {
+            } else if ($payment_type == 'wallet') {
                 $order->payment_method = 'wallet';
                 $order->payment_status = 'paid';
                 $order->save();
@@ -1392,16 +1350,15 @@ class PageController extends Controller
             if (!is_null($request->email)) {
                 //Mail::send(new OrderMail($order));
             }
-            
+
             return redirect()->route('order.complete', $order->code);
 
-        }
-        else {
+        } else {
             return Redirect()->back()->with('error', 'Network Error!');
         }
 
     }
-    
+
 
     public function order_complete($code)
     {
@@ -1414,20 +1371,19 @@ class PageController extends Controller
                 $qty = $cart->qty;
 
                 $product = Product::find($product_id);
-                if(!is_null($product)) {
-                    if($variation == 0) {
+                if (!is_null($product)) {
+                    if ($variation == 0) {
                         $stock_info = $product->single_stock;
                         $stock_info->qty -= $qty;
-                        if($stock_info->qty < 0) {
+                        if ($stock_info->qty < 0) {
                             $stock_info->qty = 0;
                         }
                         $stock_info->save();
-                    }
-                    else {
+                    } else {
                         $stock_info = ProductStocks::find($variation);
-                        if(!is_null($stock_info)) {
+                        if (!is_null($stock_info)) {
                             $stock_info->qty -= $qty;
-                            if($stock_info->qty < 0) {
+                            if ($stock_info->qty < 0) {
                                 $stock_info->qty = 0;
                             }
                             $stock_info->save();
@@ -1442,15 +1398,14 @@ class PageController extends Controller
             Session::forget('coupon_discount');
 
             $phone = optional($order)->phone;
-            $msg = 'Dear Sir/Madam, Your order('.$order->code.') has been Placed successfully. Thanks for shopping with us.';
+            $msg = 'Dear Sir/Madam, Your order(' . $order->code . ') has been Placed successfully. Thanks for shopping with us.';
             //$send_sms = User::send_sms($phone, $msg);
             return $this->get_order_info($order->id);
             //return view('user.pages.order_complete', compact('order'));
             //return view('pages.order-complete', compact('order'));
 
-        }
-        else{
-            return back()->with('error','Invalid order code!');
+        } else {
+            return back()->with('error', 'Invalid order code!');
         }
     }
 
@@ -1460,11 +1415,11 @@ class PageController extends Controller
         $district_info = District::find($district_id);
         $shipping_charge = 0;
         $wallet_amount = 0;
-        if(!is_null($district_info)){
+        if (!is_null($district_info)) {
             $shipping_charge = $district_info->shipping_charge;
         }
 
-        if(Auth::check()) {
+        if (Auth::check()) {
             $wallet_amount = Auth::user()->wallet_amount;
         }
 
@@ -1488,29 +1443,29 @@ class PageController extends Controller
         if (!is_null($order)) {
             return $this->get_order_info($order->id);
             //return view('pages.track-order-result', compact('order'));
-        }
-        else{
-            return back()->with('error','Invalid order code!');
+        } else {
+            return back()->with('error', 'Invalid order code!');
         }
     }
 
-    public function get_order_info($id) {
+    public function get_order_info($id)
+    {
         $order = Order::find($id);
         if (!is_null($order)) {
-            return view('user.pages.order_complete', compact('order'));
-        }
-        else{
-            return back()->with('error','Invalid order code!');
+            return view('global.pages.order_complete', compact('order'));
+        } else {
+            return back()->with('error', 'Invalid order code!');
         }
     }
 
-    public function other_pages($id, $name) {
+    public function other_pages($id, $name)
+    {
         $page_info = Page::find($id);
+       
         if (!is_null($page_info)) {
-            return view('user.pages.others_page', compact('page_info'));
-        }
-        else{
-            return back()->with('error','Invalid page access!');
+            return view('global.pages.page', compact('page_info'));
+        } else {
+            return back()->with('error', 'Invalid page access!');
         }
     }
 
@@ -1520,13 +1475,23 @@ class PageController extends Controller
         return view('user.pages.blog_index', compact('blogs'));
     }
 
-    public function user_blog_details($id, $slug) {
+    public function user_blog_details($id, $slug)
+    {
         $blog_details = Blog::find($id);
-        if(is_null($blog_details)) {
+        if (is_null($blog_details)) {
             return Redirect()->back()->with('error', 'No News Found!');
         }
 
         return view('user.pages.blog_details', compact('blog_details'));
+    }
+    public function order_print($id)
+    {
+        $order = Order::find($id);
+        if (!is_null($order)) {
+            return view('global.pages.order-print', compact('order'));
+        } else {
+            return back()->with('error', 'Invalid order code!');
+        }
     }
 
 

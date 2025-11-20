@@ -1,14 +1,146 @@
-@extends('user.inc.master')
+@extends('global.inc.master')
+@php($business_info = business_info())
 
 @section('title')
-    Register
+    Home
 @endsection
-
+@section('description')
+    {{ optional($business_info)->meta_description }}
+@endsection
+@section('keywords')
+    {{ optional($business_info)->meta_keywords }}
+@endsection
+@section('layout')
+    <!-- Top Header -->
+    <!-- Top Nav -->
+    @include('global.inc.top-nav')
+    <!-- side bar -->
+    @include('global.inc.side-bar')
+@endsection
 @section('content')
     <style>
         @media only screen and (max-width: 768px) {
             .sign_in_top {
                 padding-top: 0px !important;
+            }
+        }
+
+        /* ---- REGISTER PAGE CUSTOM STYLING ---- */
+
+        .login__section {
+            background: #f7f7f7;
+            padding: 60px 0;
+        }
+
+        .login__section--inner {
+            display: flex;
+            justify-content: center;
+        }
+
+        .account__login {
+            background: #ffffff;
+            padding: 35px 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .account__login--header__title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .account__login--header__desc {
+            color: #666;
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        .account__login--input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            margin-top: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .account__login--input:focus {
+            border-color: #ee2761;
+            box-shadow: 0 0 0 3px rgba(238, 39, 97, 0.18);
+            outline: none;
+        }
+
+        .account__login--btn {
+            width: 100%;
+            padding: 13px;
+            background: #ee2761;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .account__login--btn:hover {
+            background: #c91d4f;
+        }
+
+        /* Error messages */
+        .account__login--inner span {
+            font-size: 13px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Terms checkbox */
+        .checkout__checkbox--input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .login__remember--label {
+            font-size: 14px;
+            margin-left: 6px;
+            cursor: pointer;
+        }
+
+        .account__login--signup__text {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+        }
+
+        .account__login--forgot {
+            color: #ee2761;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .account__login--forgot:hover {
+            text-decoration: underline;
+        }
+
+        /* ---- MOBILE ---- */
+        @media (max-width: 768px) {
+            .sign_in_top {
+                padding-top: 0 !important;
+            }
+
+            .account__login {
+                padding: 25px 20px;
+                box-shadow: none;
+            }
+
+            .account__login--header__title {
+                font-size: 24px;
             }
         }
     </style>
@@ -62,10 +194,10 @@
                                         <input class="account__login--input" placeholder="Confirm Password" required
                                             name="password_confirmation" type="password">
 
-                                        <div class="account__login--remember position__relative mb-3">
+                                        <div class="account__login--remember position__relative mb-3" style="margin-top: 12px">
                                             <input class="checkout__checkbox--input" id="check2" required
                                                 type="checkbox">
-                                            <span class="checkout__checkbox--checkmark"></span>
+                                            {{-- <span class="checkout__checkbox--checkmark"></span> --}}
                                             <label class="checkout__checkbox--label login__remember--label" for="check2">
                                                 I have read and agree to the terms &amp; conditions</label>
                                         </div>
@@ -148,4 +280,5 @@
             }
         }
     </script>
+    @include('global.inc.footer')
 @endsection

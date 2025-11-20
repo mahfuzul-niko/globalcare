@@ -51,8 +51,8 @@ class DistrictController extends Controller
         $district->name = $request->name;
         $district->shipping_charge = $request->shipping_charge;
         $district->save();
-        Alert::toast('One District Added !', 'success');
-        return redirect()->route('district.index');
+        // Alert::toast('One District Added !', 'success');
+        return redirect()->route('district.index')->with('success', 'One District Added successfully');
     }
 
     /**
@@ -96,7 +96,7 @@ class DistrictController extends Controller
         $district->shipping_charge = $request->shipping_charge;
 
         $district->save();
-        Alert::toast('District has been updated !', 'success');
+        
         return redirect()->route('district.index');
     }
 
@@ -112,8 +112,8 @@ class DistrictController extends Controller
         if (!is_null($district)) {
             
             $district->delete();
-            Alert::toast('District has been deleted !', 'success');
-            return back();
+            
+            return back()->with('success', 'One District deleted successfully');
         }
         else {
             session()->flash('error','Something went wrong !');

@@ -8,7 +8,7 @@ use Auth;
 use Image;
 use File;
 use Alert;
-
+use Illuminate\Support\Str;
 class AdminPageController extends Controller
 {
     /**
@@ -21,8 +21,7 @@ class AdminPageController extends Controller
         if (Auth::user()->type == 1) {
             $pages = Page::all();
             return view('admin.page.index', compact('pages'));
-        }
-        else {
+        } else {
             Alert::toast('Something went wrong !', 'error');
             return back();
         }
@@ -44,26 +43,24 @@ class AdminPageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+
+
     public function store(Request $request)
     {
-        $page_slug = $request->page_slug;
-        $check_page = Page::where('page_slug', $page_slug)->first();
-
-        if(!is_null($check_page)) {
-            Alert::toast('This Page is Already Exist!', 'error');
-            return back();
-        }
+        // Validate the request
+        $validatedData = $request->validate([
+            'page_slug' => 'required|string|max:255|unique:pages,page_slug',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+        ]);
 
         $page = new Page;
-
-        $page->page_slug = $page_slug;
+        $page->page_slug = Str::slug($request->page_slug); // convert to slug
         $page->name = $request->name;
         $page->description = $request->description;
-        $page->save();
+        $page->save(); // don't forget to save
 
-        Alert::toast('New Page Added.', 'success');
-        return back();
-
+        return back()->with('success', 'New Page created successfully');
     }
 
     /**
@@ -89,14 +86,12 @@ class AdminPageController extends Controller
             $page = Page::find($id);
             if (!is_null($page)) {
                 return view('admin.page.edit', compact('page'));
-            }
-            else {
+            } else {
                 Alert::toast('Something went wrong !', 'error');
                 return back();
             }
-        }
-        else {
-            session()->flash('error','Something went wrong !');
+        } else {
+            session()->flash('error', 'Something went wrong !');
             return back();
         }
     }
@@ -110,10 +105,10 @@ class AdminPageController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $page = Page::find($id);
 
-        if(is_null($page)) {
+        if (is_null($page)) {
             Alert::toast('No Page Found!', 'error');
             return back();
         }
@@ -121,7 +116,7 @@ class AdminPageController extends Controller
         $page->name = $request->name;
         $page->description = $request->description;
         $page->save();
-        
+
         Alert::toast('Page Updated', 'success');
         return redirect()->route('page.index');
     }

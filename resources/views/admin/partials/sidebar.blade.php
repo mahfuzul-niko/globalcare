@@ -52,12 +52,12 @@
               </a>
             </li>
 
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="{{ route('about_us.index') }}" class="nav-link">
                 <i class="fas fa-angle-right"></i>
                 <p>About Us</p>
               </a>
-            </li>
+            </li> --}}
 
             {{-- <li class="nav-item">
               <a href="{{ route('setting.reward.point') }}" class="nav-link">
@@ -71,7 +71,7 @@
                 <p>Slider</p>
               </a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
               <a href="{{ route('slider_side_banner.index') }}" class="nav-link">
                 <i class="fas fa-angle-right"></i>
                 <p>Slider Side Banner</p>
@@ -82,7 +82,7 @@
                 <i class="fas fa-angle-right"></i>
                 <p>Middle Banner</p>
               </a>
-            </li>
+            </li> --}}
             <li class="nav-item">
               <a href="{{ route('page.index') }}" class="nav-link">
                 <i class="fas fa-angle-right"></i>
@@ -317,14 +317,14 @@
         </li>
         --}}
 
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="{{ route('admin.subscribers') }}" class="nav-link">
             <i class="nav-icon fas fa-bell-slash"></i>
             <p>
               Subscribers
             </p>
           </a>
-        </li>
+        </li> --}}
 
         <li class="nav-item">
           <a href="#" class="nav-link">
@@ -352,7 +352,7 @@
 
           </ul>
         </li>
-        <li class="nav-item">
+        {{-- <li class="nav-item">
           <a href="#" class="nav-link">
             <i class="nav-icon fas fa-tablets"></i>
             <p>
@@ -376,7 +376,7 @@
             </li>
 
           </ul>
-        </li>
+        </li> --}}
 
 
         <li class="nav-item">
