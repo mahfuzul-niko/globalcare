@@ -148,67 +148,27 @@
         cart_load();
     });
 
-    function addToCart(product_id, selected_variation_id2, type, page, product_type2) {
-        console.log('product_id:', product_id, 'selected_variation_id2:', selected_variation_id2, 'type:', type,
-            'page:', page, 'product_type2:', product_type2);
-        url = "{{ route('cart.add') }}";
+    function addToCart(product_id, variation_id) {
+        $.ajax({
+            url: "{{ route('cart.add') }}",
+            type: "POST",
+            data: {
+                product_id: product_id,
+                variation_id: variation_id,
+                _token: "{{ csrf_token() }}"
+            },
 
-        if (type === 'details') {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            success: function(response) {
+                if (response.status === 'yes') {
+                    
+                    location.reload();
+                } else {
+                    alert(response.reason);
                 }
-            });
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: $('#add_to_server' + product_id).serialize() +
-                    '&product_id2=' + product_id +
-                    '&product_type2=' + product_type2 +
-                    '&selected_variation_id2=' + selected_variation_id2,
-                success: function(response) {
-                    console.log('details:', response);
-                    if (response.status == 'yes') {
-                        success(response.reason);
-                        cart_load();
-                        if (page == 'checkout') {
-                            window.location.href = '{{ route('checkout') }}';
-                        }
-                    } else {
-                        error(response.reason);
-                    }
-                }
-            });
-        } else {
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: {
-                    product_id: product_id,
-                    _token: '{{ csrf_token() }}',
-                },
-                success: function(response) {
-                    console.log('only:', response);
-                    if (response.status == 'yes') {
-                        success(response.reason);
-                        cart_load();
-
-                        $('.minicart__open--btn').click();
-                        if (page == 'checkout') {
-                            window.location.href = '{{ route('checkout') }}';
-                        } else {
-                            open_cart();
-                        }
-                    } else {
-                        error(response.reason);
-                    }
-                }
-            });
-
-        }
-
+            }
+        });
     }
+
 
     function cart_load() {
         $.ajax({

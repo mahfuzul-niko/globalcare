@@ -157,7 +157,9 @@ class CartController extends Controller
                     ]);
                     Session::forget('coupon_discount');
                     $output = ['status' => 'yes', 'reason' => 'Added to cart.'];
+                    session()->flash('flash_success', $output['reason']);
                     return Response($output);
+
                 } else {
                     $output = ['status' => 'no', 'reason' => 'Stock quantity is over!'];
                     return Response($output);
