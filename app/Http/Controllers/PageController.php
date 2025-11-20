@@ -214,7 +214,7 @@ class PageController extends Controller
             $similar_products = Product::where('category_id', $product->category_id)->where('id', '<>', $product->id)->inRandomOrder()->limit(10)->get();
             // return view('pages.single-product', compact('product', 'similar_products'));
             //return 0;
-            return view('user.pages.single-product', compact('product', 'similar_products'));
+            return view('global.pages.single-product', compact('product', 'similar_products'));
         } else {
             session()->flash('error', 'Page Not Found');
             return back();

@@ -137,13 +137,7 @@
                                  <div class="product_info__xR3HX">
 
 
-                                     <div class="py-10">
-                                         <div class="d-flex justify-space-between">
-                                             <h1 class="text-capitalize text-24 fw-600">
-                                                 {{ $product->brand->title }}
-                                             </h1>
-                                         </div>
-                                     </div>
+                                    
                                      @if (!is_null($product->brand))
                                          <a class="mb-10" href="#">
                                              <div class="product_company_warp__vWamg border-b1-grey300 py-10">
