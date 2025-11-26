@@ -210,6 +210,7 @@ class PageController extends Controller
     public function single_product($id, $slug)
     {
         $product = Product::find($id);
+        // dd($product);
         if (!is_null($product)) {
             $similar_products = Product::where('category_id', $product->category_id)->where('id', '<>', $product->id)->inRandomOrder()->limit(10)->get();
             // return view('pages.single-product', compact('product', 'similar_products'));

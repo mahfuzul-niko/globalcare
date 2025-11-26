@@ -432,11 +432,11 @@
                                     <input type="hidden" name="stock_qty" id="stock_qty_{{ optional($product)->id }}"
                                         value="{{ optional($stock_price)->qty }}">
                                     @if (optional($stock_price)->qty > 0)
-                                        <button class="ms-0 quickview__cart--btn primary__btn"
+                                        <button class="ms-0 quickview__cart--btn btn btn-primary"
                                             onclick="addToCart({{ optional($product)->id }}, 'details', 'cart', 'single')"
                                             id="add_to_cart_button{{ optional($product)->id }}" type="button">Add To
                                             Cart</button>
-                                        <button class="quickview__cart--btn primary__btn"
+                                        <button class="quickview__cart--btn btn btn-primary"
                                             id="buy_now_button{{ optional($product)->id }}"
                                             onclick="addToCart({{ optional($product)->id }}, 'details', 'checkout', 'single')"
                                             type="button">Buy Now</button>

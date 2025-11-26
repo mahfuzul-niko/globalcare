@@ -202,18 +202,18 @@
                font-weight: bold;
            }
 
-           /* Make table horizontally scrollable on small screens */
+          
+           /* Force horizontal scroll on small screens */
            .table-responsive {
                width: 100%;
                overflow-x: auto;
                -webkit-overflow-scrolling: touch;
-               /* smooth scrolling on iOS */
            }
 
            .table-responsive table {
                width: 100%;
-               min-width: 600px;
-               /* optional, to avoid squishing columns */
+               min-width: 650px;
+               /* important: prevents squishing */
                border-collapse: collapse;
            }
 
@@ -287,6 +287,12 @@
                .table-responsive {
                    overflow-x: auto;
                }
+               @media (max-width: 767px) {
+    .cart-table-inner {
+        min-width: 650px;
+    }
+}
+
            }
        </style>
        <section class="cart-section py-5">

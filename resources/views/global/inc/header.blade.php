@@ -69,12 +69,12 @@
 
         <!-- Search Bar -->
         <!-- Product Search -->
-        <div class="flex-1 relative">
+        <div class="flex-1 relative hidden md:block">
             <form id="product_search_form" class="flex rounded-md overflow-hidden bg-[#F7FAFC]"
                 action="javascript:void(0);">
 
                 <select id="search_category"
-                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer hidden md:block">
+                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer ">
                     <option value="all" selected>All Categories</option>
                     @foreach ($featured_categories as $category)
                         <option value="{{ $category->id }}">{{ $category->title }}</option>
@@ -82,7 +82,7 @@
                 </select>
 
                 <input type="text" id="search_input"
-                    class="flex-1 px-3 py-2 md:px-4 md:py-3 bg-transparent text-gray-700 placeholder-gray-400 outline-none"
+                    class="flex-1 px-3 py-2 md:px-4 md:py-3 bg-transparent text-gray-700 placeholder-gray-400 outline-none "
                     placeholder='Search for "medicine products"' />
 
             </form>
@@ -119,7 +119,7 @@
             <a href="{{ route('carts') }}" class="relative">
                 <i class="fa-solid fa-cart-shopping text-[20px]"></i>
                 <span
-                    class="absolute -top-3 -right-3 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex justify-center items-center cart-count"
+                    class="absolute -top-3 -right-3 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex justify-center items-center "
                     id="cart_count_1">0</span>
             </a>
         </div>
@@ -143,4 +143,6 @@
 
         lastScroll = currentScroll;
     });
+    // console.log(('.cart_count_1').length);
+
 </script>

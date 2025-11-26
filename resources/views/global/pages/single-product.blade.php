@@ -4,6 +4,7 @@
      $stock_qty = '';
      $stock_qty_text = 'In Stock';
 
+
      if ($product->discount_type != 'no') {
          if ($product->discount_type == 'flat') {
              $sale_text = 'Discount ' . optional($product)->discount_amount . ' TK';
@@ -15,6 +16,8 @@
      if ($product->type == 'single') {
          if (optional($stock_price)->qty <= 0) {
              $sale_text = 'Out of Stock';
+             $stock_qty_text = 'Out of Stock';
+             
          }
          $stock_qty = optional($stock_price)->qty . ' ' . optional($product)->unit_type;
      } else {
@@ -242,6 +245,8 @@
                                      <div class="d-flex justify-content-md-end items-center gap-20 my-10 mt-md-10 order-md-2"
                                          style="height: 48px">
                                          <div class="arogga-btn primary medium w-100 w-md-auto"
+                                         onclick="addToCart({{ optional($product)->id }}, 'details', 'cart', 'single')"
+                                                 id="add_to_cart_button{{ optional($product)->id }}" type="button"
                                              style="display: block; height: 48px">
                                              <div class="inner" style="pointer-events: none">
                                                  <span class="p-20">Add to Cart</span>

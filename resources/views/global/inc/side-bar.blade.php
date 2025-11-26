@@ -13,7 +13,22 @@
      <button id="sidebar-close-btn" class="absolute top-4 right-4 text-2xl text-red-500 lg:hidden">
          <i class="fa-solid fa-xmark"></i>
      </button>
+     <div class="flex-1 block lg:hidden" style="margin: 12px 0 12px 0;">
+         <form id="product_search_form" class="flex rounded-md overflow-hidden bg-[#F7FAFC]"
+             action="javascript:void(0);">
 
+             <input type="text" id="search_input"
+                 class="flex-1 px-3 py-2 md:px-4 md:py-3 bg-transparent text-gray-700 placeholder-gray-400 outline-none "
+                 placeholder='Search for "medicine products"' />
+
+         </form>
+
+         <!-- AJAX Results -->
+         <div id="search_results_container"
+             class="absolute w-full bg-white border border-gray-200 mt-2 rounded-md shadow-md hidden z-50">
+             <div id="search_results" class="grid grid-cols-2 md:grid-cols-3 gap-3 p-3"></div>
+         </div>
+     </div>
      <h4 class="flex items-center gap-1 mb-6">
          <img src="{{ asset('global/assets') }}/images/icons/column.svg" alt="Column Icons" />
          <span class="text-sm xl:text-base text-primary font-[500] whitespace-nowrap">Shop By Category</span>

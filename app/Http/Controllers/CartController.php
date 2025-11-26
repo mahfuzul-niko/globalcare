@@ -272,10 +272,10 @@ class CartController extends Controller
 
 
 
-        //return $cart_sidebar;
+        //return $cart_sidebar; 
 
         return Response()->json([
-            'cart_sidebar' => $cart_sidebar,
+            // 'cart_sidebar' => $cart_sidebar,
             'cart_count' => $cart_count,
         ]);
 
