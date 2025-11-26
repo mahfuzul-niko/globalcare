@@ -4,7 +4,7 @@
      $pages = App\Models\Page::all();
  @endphp
  <div class="footer bg-[#080909] py-10 px-2 text-white">
-     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
+     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 px-4">
          <div class="footer-item xl:text-center xl:px-4">
              <a href="{{ route('index') }}" class="inline-block mx-auto">
                  <img src="{{ asset('images/website/' . optional($business)->header_logo) }}" class="w-[120px]"

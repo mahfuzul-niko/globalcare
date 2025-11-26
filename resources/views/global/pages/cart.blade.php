@@ -202,7 +202,7 @@
                font-weight: bold;
            }
 
-          
+
            /* Force horizontal scroll on small screens */
            .table-responsive {
                width: 100%;
@@ -217,7 +217,7 @@
                border-collapse: collapse;
            }
 
-           @media (max-width: 767px) {
+           @media (max-width: 1499px) {
 
                /* Remove table horizontal overflow */
                .cart-table-inner {
@@ -287,11 +287,12 @@
                .table-responsive {
                    overflow-x: auto;
                }
+
                @media (max-width: 767px) {
-    .cart-table-inner {
-        min-width: 650px;
-    }
-}
+                   .cart-table-inner {
+                       min-width: 650px;
+                   }
+               }
 
            }
        </style>
@@ -303,7 +304,7 @@
                    <div class="grid-2">
                        <!-- LEFT SIDE: Cart Items -->
                        <div>
-                           <div class="cart-table table-responsive">
+                           {{-- <div class="cart-table table-responsive hidden lg:block">
                                <table class="cart-table-inner">
                                    <thead>
                                        <tr>
@@ -423,7 +424,160 @@
                                <div class="space-between mt-20">
                                    <a href="{{ route('products') }}" class="continue-btn">Continue Shopping</a>
                                </div>
+                           </div> --}}
+                           <div class="">
+                               <div style="display:block; margin:0; padding:0;">
+
+                                   @if (count($carts) > 0)
+                                       @foreach ($carts as $cart)
+                                           <?php
+                                           $product_info = App\Models\Product::find(optional($cart->options)->product_id);
+                                           
+                                           $variation_info = '';
+                                           
+                                           if (!is_null($product_info)) {
+                                               if ($cart->weight != 0) {
+                                                   $stock_info = App\Models\ProductStocks::find($cart->weight);
+                                           
+                                                   $color_info = $stock_info->color ? '<b>Color:</b> ' . optional(color_info($stock_info->color))->name . ', ' : '';
+                                           
+                                                   $attribute_info = $stock_info->variant ? '<b>' . optional(variation_info($stock_info->variant))->title . ':</b> ' . optional($stock_info)->variant_output : '';
+                                           
+                                                   $variation_info = $color_info . $attribute_info;
+                                               }
+                                           
+                                               $price_info = '৳' . number_format(optional($cart->options)->single_price, 2);
+                                               $total_price = number_format(optional($cart->options)->single_price * $cart->qty, 2);
+                                           }
+                                           ?>
+
+                                           @if (!is_null($product_info))
+                                               <div
+                                                   style="
+                        width:100%;
+                        background:white;
+                        border-radius:12px;
+                        padding:16px;
+                        margin-bottom:18px;
+                        box-shadow:0 3px 10px rgba(0,0,0,0.08);
+                        border:1px solid #eee;
+                    ">
+
+                                                   <!-- Remove Button -->
+                                                   <form action="{{ route('cart.remove') }}" method="POST"
+                                                       style="text-align:right; margin-bottom:8px;">
+                                                       @csrf
+                                                       <input type="hidden" name="rowId" value="{{ $cart->rowId }}">
+                                                       <button
+                                                           style="
+                                background:none;
+                                border:none;
+                                color:#e63946;
+                                font-size:24px;
+                                font-weight:bold;
+                                cursor:pointer;
+                            ">&times;</button>
+                                                   </form>
+
+                                                   <div style="display:flex; gap:14px;">
+                                                       <div
+                                                           style="
+                                width:90px;
+                                height:90px;
+                                border-radius:8px;
+                                overflow:hidden;
+                                border:1px solid #ddd;
+                            ">
+                                                           <img src="{{ asset('images/product/' . optional($product_info)->thumbnail_image) }}"
+                                                               style="width:100%; height:100%; object-fit:cover;">
+                                                       </div>
+
+                                                       <div style="flex:1;">
+                                                           <h4 style="font-size:16px; font-weight:600; margin:0;">
+                                                               <a href="{{ route('single.product', [$product_info->id, Str::slug($product_info->title)]) }}"
+                                                                   style="text-decoration:none; color:#333;">
+                                                                   {{ $product_info->title }}
+                                                               </a>
+                                                           </h4>
+
+                                                           <div style="font-size:13px; color:#555; margin-top:4px;">
+                                                               {!! $variation_info !!}
+                                                           </div>
+
+                                                           <div
+                                                               style="
+                                    margin-top:6px;
+                                    font-size:16px;
+                                    font-weight:600;
+                                    color:#ff3d00;
+                                ">
+                                                               Price: {{ $price_info }}
+                                                           </div>
+                                                       </div>
+                                                   </div>
+
+                                                   <!-- Quantity + Total -->
+                                                   <div
+                                                       style="
+                            margin-top:12px;
+                            display:flex;
+                            justify-content:space-between;
+                            align-items:center;
+                        ">
+
+                                                       <!-- Quantity -->
+                                                       <div
+                                                           style="
+                                display:flex;
+                                align-items:center;
+                                border:1px solid #ccc;
+                                border-radius:6px;
+                            ">
+                                                           <button
+                                                               onclick="change_cart_qty('down', '{{ $cart->rowId }}', 'cart_page')"
+                                                               style="padding:6px 12px; border:none; background:#f5f5f5; font-size:18px; cursor:pointer;">-</button>
+
+                                                           <input readonly class="cart_page_qty_{{ $cart->rowId }}"
+                                                               value="{{ $cart->qty }}"
+                                                               style="
+                                        width:40px;
+                                        text-align:center;
+                                        border-left:1px solid #ddd;
+                                        border-right:1px solid #ddd;
+                                        border:none;
+                                        padding:6px 0;
+                                    ">
+
+                                                           <button
+                                                               onclick="change_cart_qty('up', '{{ $cart->rowId }}', 'cart_page')"
+                                                               style="padding:6px 12px; border:none; background:#f5f5f5; font-size:18px; cursor:pointer;">+</button>
+                                                       </div>
+
+                                                       <div style="text-align:right;">
+                                                           <span style="font-size:18px; font-weight:700; color:#333;">
+                                                               ৳{{ $total_price }}
+                                                           </span>
+                                                       </div>
+                                                   </div>
+
+                                               </div>
+                                           @endif
+                                       @endforeach
+                                   @else
+                                       <div style="text-align:center; padding:40px 0;">
+                                           <h3><b>Cart is Empty!</b></h3>
+                                       </div>
+                                   @endif
+
+                                   <div style="margin-top:16px;">
+                                       <a href="{{ route('products') }}" class="continue-btn">Continue Shopping</a>
+                                   </div>
+
+                               </div>
+                                
                            </div>
+
+
                        </div>
 
                        <!-- RIGHT SIDE: Summary -->
