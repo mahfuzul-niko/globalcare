@@ -582,7 +582,15 @@
 
                        <!-- RIGHT SIDE: Summary -->
                        <div>
-                           <div class="cart-summary">
+                           <div class="cart-summary"  style="
+                        width:100%;
+                        background:white;
+                        border-radius:12px;
+                        padding:16px;
+                        margin-bottom:18px;
+                        box-shadow:0 3px 10px rgba(0,0,0,0.08);
+                        border:1px solid #eee;
+                    ">
                                {{-- <div class="coupon-box mb-30">
                                    <h3>Coupon</h3>
                                    <p>Enter your coupon code if you have one.</p>

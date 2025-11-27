@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Category;
 use App\Models\District;
 use App\Models\Order;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Support\Facades\Route;
@@ -456,7 +458,7 @@ Route::get('/test-0', function () {
 });
 Route::get('/test', function () {
 
-
-	return view('global.pages.page');
+	$categories = Category::where('is_active', 1)->where('parent_id', 0)->orderBy('position', 'ASC')->get();
+        return view('pages.categories', compact('categories'));
 
 })->name('global.page');

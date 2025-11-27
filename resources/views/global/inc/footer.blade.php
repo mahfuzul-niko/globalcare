@@ -21,18 +21,11 @@
          </div>
          <div class="footer-item">
              <div>
-                 <h3>Company</h3>
-                 <ul>
-                     {{-- <li>
-                         <a href="#">Careers
-                             <span class="bg-primary text-white px-2 py-1 text-xs rounded-sm">We are
-                                 hiring</span></a>
-                     </li> --}}
-                     {{-- <li><a href="#">We are hiring</a></li> --}}
-                     {{-- <li><a href="#">Privacy Policy</a></li>
-                     <li><a href="#">Terms and Conditions</a></li>
-                     <li><a href="#">Return and Refund Policy</a></li> --}}
-                 </ul>
+                 <h3>About Us</h3>
+                 <p>
+                     Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe sunt unde ea eaque sit? Numquam
+                     itaque minima aliquam eaque earum dolorem quo iure consequatur at amet, natus sapiente saepe odio.
+                 </p>
              </div>
              {{-- <div>
                  <h3>Our Services</h3>
@@ -124,3 +117,5 @@
          <p class="text-sm">©2025 Global Care Limited. All rights reserved.</p>
      </div> --}}
  </div>
+
+ 

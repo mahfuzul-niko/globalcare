@@ -34,6 +34,68 @@
     .footer {
         margin-top: auto;
     }
+
+/* Sticky bottom bar */
+.sticky-footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    border-top: 1px solid #ddd;
+    z-index: 9999;
+}
+
+/* Each link item */
+.sticky-link {
+    color: #444;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    position: relative;
+}
+
+/* Icons (SVG images) */
+.sticky-link img {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+/* Cart count badge (works with image) */
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 12px;
+    background: red;
+    color: white;
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 50%;
+    line-height: 1;
+}
+
+/* Active link indicator */
+.sticky-link.active p,
+.sticky-link.active img {
+    filter: brightness(0) saturate(100%) invert(38%) sepia(84%) saturate(2407%) hue-rotate(203deg) brightness(91%) contrast(96%);
+    /* This makes PNG/SVG icon appear blue */
+}
+
+/* Hide the footer on desktop */
+@media(min-width: 768px) {
+    .sticky-footer {
+        display: none;
+    }
+}
+
 </style>
 
 <body>
@@ -46,11 +108,32 @@
         @yield('content')
 
     </div>
-
+    {{-- mobile footer  --}}
+    <div class="sticky-footer sticky-content fix-bottom">
+        <a href="{{ route('index') }}" class="sticky-link ">
+            <img src="{{ asset('global/icon/home-4-svgrepo-com.svg') }}" alt="" height="24" width="24">
+            <p>Home</p>
+        </a>
+        <a href="{{ route('products') }}" class="sticky-link">
+           <img src="{{ asset('global/icon/stack-svgrepo-com.svg') }}" alt="" height="24" width="24">
+            <p>Shop</p>
+        </a>
+        <a href="{{ route('home') }}" class="sticky-link">
+           <img src="{{ asset('global/icon/person-circle-svgrepo-com.svg') }}" alt="" height="24" width="24">
+            <p>Account</p>
+        </a>
+        <div class="cart-dropdown dir-up">
+            <a href="{{ route('carts') }}" class="sticky-link">
+                <img src="{{ asset('global/icon/shop-svgrepo-com.svg') }}" alt="" height="24" width="24">
+                {{-- <span class="cart-count" id="mobile_total_count">{{ Cart::count() }}</span> --}}
+                <p>Cart</p>
+            </a>
+        </div>
+    </div>
 
 
     <!-- To Top -->
-    <div class="to-top fixed bottom-10 right-10 z-56">
+    <div style="position: fixed; bottom: 80px; right: 20px; z-index: 9999;">
         <a href="javascript:void(0)"
             class="bg-primary text-white rounded-full w-[40px] h-[40px] flex items-center justify-center">
             <i class="fa-solid fa-arrow-up"></i>
