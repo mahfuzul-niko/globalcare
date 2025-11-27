@@ -1,3 +1,4 @@
+
 @if (!empty($product))
     @php
         // Fetch stock info
@@ -46,7 +47,7 @@
                 </div>
 
                 {{-- Price Section --}}
-                <div class="product-btm">
+                <div class="product-row" style="display: flex; justify-content: space-between; align-items: center;">
                     <div class="product-price">
                         @if ($product->discount_type != 'no')
                             <p class="old__price">৳{{ number_format(optional($stock_price)->price ?? 0) }}</p>

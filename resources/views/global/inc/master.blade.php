@@ -35,67 +35,85 @@
         margin-top: auto;
     }
 
-/* Sticky bottom bar */
-.sticky-footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 0;
-    border-top: 1px solid #ddd;
-    z-index: 9999;
-}
-
-/* Each link item */
-.sticky-link {
-    color: #444;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    font-size: 12px;
-    position: relative;
-}
-
-/* Icons (SVG images) */
-.sticky-link img {
-    width: 24px;
-    height: 24px;
-    display: block;
-}
-
-/* Cart count badge (works with image) */
-.cart-count {
-    position: absolute;
-    top: 0;
-    right: 12px;
-    background: red;
-    color: white;
-    font-size: 10px;
-    padding: 1px 6px;
-    border-radius: 50%;
-    line-height: 1;
-}
-
-/* Active link indicator */
-.sticky-link.active p,
-.sticky-link.active img {
-    filter: brightness(0) saturate(100%) invert(38%) sepia(84%) saturate(2407%) hue-rotate(203deg) brightness(91%) contrast(96%);
-    /* This makes PNG/SVG icon appear blue */
-}
-
-/* Hide the footer on desktop */
-@media(min-width: 768px) {
+    /* Sticky bottom bar */
     .sticky-footer {
-        display: none;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: #ffffff;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        padding: 8px 0;
+        border-top: 1px solid #ddd;
+        z-index: 9999;
     }
-}
 
+    /* Each link item */
+    .sticky-link {
+        color: #444;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        font-size: 12px;
+        position: relative;
+    }
+
+    /* Icons (SVG images) */
+    .sticky-link img {
+        width: 24px;
+        height: 24px;
+        display: block;
+    }
+
+    /* Cart count badge (works with image) */
+    .cart-count {
+        position: absolute;
+        top: 0;
+        right: 12px;
+        background: red;
+        color: white;
+        font-size: 10px;
+        padding: 1px 6px;
+        border-radius: 50%;
+        line-height: 1;
+    }
+
+    /* Active link indicator */
+    .sticky-link.active p,
+    .sticky-link.active img {
+        filter: brightness(0) saturate(100%) invert(38%) sepia(84%) saturate(2407%) hue-rotate(203deg) brightness(91%) contrast(96%);
+        /* This makes PNG/SVG icon appear blue */
+    }
+
+    @media (max-width: 768px) {
+        .product-row {
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+            text-align: center;
+        }
+
+        .product-btn,
+        .product-price {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .product-btn button {
+            width: 100%;
+        }
+    }
+
+    /* Hide the footer on desktop */
+    @media(min-width: 768px) {
+        .sticky-footer {
+            display: none;
+        }
+    }
 </style>
 
 <body>
@@ -115,16 +133,18 @@
             <p>Home</p>
         </a>
         <a href="{{ route('products') }}" class="sticky-link">
-           <img src="{{ asset('global/icon/stack-svgrepo-com.svg') }}" alt="" height="24" width="24">
+            <img src="{{ asset('global/icon/stack-svgrepo-com.svg') }}" alt="" height="24" width="24">
             <p>Shop</p>
         </a>
         <a href="{{ route('home') }}" class="sticky-link">
-           <img src="{{ asset('global/icon/person-circle-svgrepo-com.svg') }}" alt="" height="24" width="24">
+            <img src="{{ asset('global/icon/person-circle-svgrepo-com.svg') }}" alt="" height="24"
+                width="24">
             <p>Account</p>
         </a>
         <div class="cart-dropdown dir-up">
             <a href="{{ route('carts') }}" class="sticky-link">
-                <img src="{{ asset('global/icon/shop-svgrepo-com.svg') }}" alt="" height="24" width="24">
+                <img src="{{ asset('global/icon/shop-svgrepo-com.svg') }}" alt="" height="24"
+                    width="24">
                 {{-- <span class="cart-count" id="mobile_total_count">{{ Cart::count() }}</span> --}}
                 <p>Cart</p>
             </a>
