@@ -133,7 +133,7 @@
 
 
     <!-- To Top -->
-    <div style="position: fixed; bottom: 80px; right: 20px; z-index: 9999;">
+    <div class="to-top" style="position: fixed; bottom: 80px; right: 20px; z-index: 9999;">
         <a href="javascript:void(0)"
             class="bg-primary text-white rounded-full w-[40px] h-[40px] flex items-center justify-center">
             <i class="fa-solid fa-arrow-up"></i>
