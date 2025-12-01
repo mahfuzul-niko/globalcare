@@ -2,9 +2,7 @@
     $business = App\Models\Setting::find(1);
 @endphp
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="description" content="@yield('description')">
@@ -173,6 +171,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('global/assets') }}/js/script.js"></script>
+
     <script>
         $(".owl-carousel").owlCarousel({
             loop: true,
@@ -199,6 +198,7 @@
         });
     </script>
     <script>
+       
         $(document).ready(function() {
             // Trigger search when typing or changing category
             $('#search_input, #search_category').on('input change', function() {
@@ -310,7 +310,7 @@
                         _token: '{{ csrf_token() }}',
                     },
                     success: function(response) {
-                        console.log('only:', response.status);
+                        console.log('only flasher:', response.status);
                         if (response.status == 'yes') {
                             cart_load();
                             $('.minicart__open--btn').click();

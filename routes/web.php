@@ -459,6 +459,6 @@ Route::get('/test-0', function () {
 Route::get('/test', function () {
 
 	$categories = Category::where('is_active', 1)->where('parent_id', 0)->orderBy('position', 'ASC')->get();
-        return view('pages.categories', compact('categories'));
+	return view('pages.categories', compact('categories'));
 
 })->name('global.page');

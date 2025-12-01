@@ -72,12 +72,14 @@ class PageController extends Controller
         $sliderSideBanner = SliderSideBanner::where('is_active', 1)->orderBy('serial_number', 'ASC')->take(2)->get();
         $brands = Brand::where('is_active', 1)->orderBy('position', 'ASC')->get();
         $featured_categories = Category::where('is_featured', 1)->orderBy('position', 'ASC')->get(['id', 'title', 'image']);
+        $index_categories = Category::where('is_index', 1)->with('products')->orderBy('position', 'ASC')->get(['id', 'title', 'image', 'color_code']);
+        
         //$todays_deals = Product::where(['is_active'=>1, 'todays_deal'=>1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         $featured_products = Product::where(['is_active' => 1, 'is_featured' => 1])->orderBy('id', 'DESC')->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         $trending_products = Product::orderBy('id', 'DESC')->where(['is_active' => 1, 'is_tranding' => 1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         //$featured_brands = Brand::where(['is_featured'=>1])->orderBy('position', 'ASC')->get();
         $blogs = Blog::where('type', 'blog')->orderBy('id', 'DESC')->limit(4)->get(['id', 'title', 'image', 'created_at']);
-        return view('global.index', compact('trending_products', 'featured_categories', 'sliders', 'brands', 'sliderSideBanner', 'featured_products', 'blogs'));
+        return view('global.index', compact('trending_products', 'featured_categories', 'sliders', 'brands', 'sliderSideBanner', 'featured_products', 'blogs','index_categories'));
         //return view('pages.index', compact('products', 'categories', 'featured_categories', 'deals', 'random_products', 'sliders', 'page', 'top_sales'));
 
     }
@@ -367,44 +369,86 @@ class PageController extends Controller
     {
         $input = $request->input;
         $category_id = $request->category_id;
+
         $output = '';
-        if ($category_id == 'all') {
-            $products = Product::where('title', 'LIKE', '%' . $input . '%')->orWhere('description', 'LIKE', '%' . $input . '%')->limit(10)->get(['id', 'title', 'thumbnail_image']);
-        } else {
-            $products = Product::where('category_id', $category_id)
-                ->where(function ($query) use ($input) {
-                    $query->where('title', 'LIKE', '%' . $input . '%')
-                        ->orWhere('description', 'LIKE', '%' . $input . '%');
-                })
-                ->limit(10)->get(['id', 'title', 'thumbnail_image']);
-        }
+
+        $products = Product::query()
+            ->when($category_id != 'all', function ($query) use ($category_id) {
+                $query->whereHas('product_category', function ($q) use ($category_id) {
+                    $q->where('category_id', $category_id);
+                });
+            })
+            ->where(function ($query) use ($input) {
+                $query->where('title', 'LIKE', '%' . $input . '%')
+                    ->orWhere('description', 'LIKE', '%' . $input . '%');
+            })
+            ->limit(10)
+            ->get(['id', 'title', 'thumbnail_image']);
 
         if ($input <> '') {
-            if (count($products) > 0) {
+            if ($products->count() > 0) {
                 foreach ($products as $product) {
-                    $output .= '<div class="col-md-12">
-                                    <div class="shadow border m-2 rounded">
-                                        <a class="widget__categories--sub__menu--link d-flex align-items-center" href="' . route('single.product', [$product->id, Str::slug($product->title)]) . '">
-                                            <img style="width: 7.8rem !important;" class="widget__categories--sub__menu--img p-1 rounded" src="' . asset('images/product/' . $product->thumbnail_image) . '" alt="categories-img">
-                                            <span class="widget__categories--sub__menu--text">' . $product->title . '</span>
-                                        </a>
-                                    </div>
-                                </div>';
+                    $output .= '
+<div style="width:100%; padding:6px; box-sizing:border-box;">
+    <div style="
+        border:1px solid #ddd;
+        border-radius:8px;
+        padding:10px;
+        margin:6px 0;
+        box-shadow:0 2px 6px rgba(0,0,0,0.08);
+        transition:0.2s;
+    ">
+        <a href="' . route('single.product', [$product->id, Str::slug($product->title)]) . '"
+           style="
+               display:flex;
+               flex-direction:column;
+               align-items:center;
+               text-decoration:none;
+           ">
+           
+            <img src="' . asset('images/product/' . $product->thumbnail_image) . '"
+                 alt="product"
+                 style="
+                    width:120px;
+                    height:auto;
+                    border-radius:6px;
+                    margin-bottom:10px;
+                 ">
+
+            <span style="
+                font-size:15px;
+                font-weight:600;
+                color:#333;
+                text-align:center;
+                line-height:1.3;
+                max-width:200px;
+                display:block;
+            ">
+                ' . $product->title . '
+            </span>
+
+        </a>
+    </div>
+</div>
+';
+
                 }
             } else {
-                $output .= '<div class="col-md-12">
-                                <div class="m-2 rounded text-center">
-                                    <h2 class="py-3 text-center">No Products Found!!!</h2>
-                                    <a class="continue__shipping--btn primary__btn rounded-pill mb-3" href="' . route('products') . '">View Shop</a>
-                                </div>
-                            </div>';
+                $output .= '
+            <div class="col-md-12">
+                <div class="m-2 rounded text-center">
+                    <h2 class="py-3 text-center">No Products Found!!!</h2>
+                    <a class="continue__shipping--btn primary__btn rounded-pill mb-3" href="' . route('products') . '">
+                        View Shop
+                    </a>
+                </div>
+            </div>';
             }
-        } else {
-
         }
 
-        return Response()->json($output);
+        return response()->json($output);
     }
+
 
     public function ajax_featured_products()
     {
@@ -1462,7 +1506,7 @@ class PageController extends Controller
     public function other_pages($id, $name)
     {
         $page_info = Page::find($id);
-       
+
         if (!is_null($page_info)) {
             return view('global.pages.page', compact('page_info'));
         } else {

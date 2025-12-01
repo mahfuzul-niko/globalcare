@@ -118,4 +118,4 @@
      </div> --}}
  </div>
 
- 
+ @include('global.inc.whatsapp')

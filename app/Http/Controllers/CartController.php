@@ -111,6 +111,7 @@ class CartController extends Controller
                             $output = [
                                 'status' => 'yes',
                                 'reason' => 'Cart Updated.',
+                                'message' => 'Cart Updated.',
                             ];
                             return Response($output);
                         } else {
@@ -156,7 +157,9 @@ class CartController extends Controller
                         ],
                     ]);
                     Session::forget('coupon_discount');
-                    $output = ['status' => 'yes', 'reason' => 'Added to cart.'];
+
+                    $output = ['status' => 'yes', 'reason' => 'Added to cart.', 'message' => 'Cart Updated.'];
+                    
                     session()->flash('flash_success', $output['reason']);
                     return Response($output);
 

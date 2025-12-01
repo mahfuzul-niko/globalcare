@@ -36,6 +36,47 @@
             pointer-events: none;
         }
     }
+
+    .location-select-box {
+        display: flex;
+        flex-direction: column;
+        width: 180px;
+        padding: 8px;
+        background: #fff;
+        border-radius: 6px;
+    }
+
+    .location-select-box:hover {
+        background: #e5f3f3;
+    }
+
+    .location-label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .location-label i {
+        font-size: 16px;
+        color: #333;
+    }
+
+    .district-select {
+        width: 100%;
+        padding: 8px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+    }
+
+    .district-select:hover {
+        background: #e5f3f3 !important;
+    }
 </style>
 
 
@@ -60,12 +101,24 @@
         </div>
 
         <!-- Location -->
-        <div
-            class="hidden lg:flex items-center space-x-2 ml-6 hover:bg-hover px-2 py-2 rounded-md cursor-pointer transition duration-200">
-            {{-- <i class="fa-solid fa-location-dot"></i>
-            <span class="text-sm font-[600]">Delivery to <br />Bangladesh --}}
-            {{-- <i class="fa-solid fa-caret-down"></i></span> --}}
+        <div class="location-select-box hover:bg-hover ">
+            <label class="location-label">
+                <i class="fa-solid fa-location-dot"></i>
+                Delivery to
+            </label>
+
+            <select id="districtSelect" class="district-select" style="border: none">
+                <option value="">Select District</option>
+                <option value="Dhaka">Dhaka</option>
+                <option value="Chattogram">Chattogram</option>
+                <option value="Sylhet">Sylhet</option>
+                <option value="Rajshahi">Rajshahi</option>
+                <option value="Khulna">Khulna</option>
+                <option value="Barishal">Barishal</option>
+                <option value="Rangpur">Rangpur</option>
+            </select>
         </div>
+
 
         <!-- Search Bar -->
         <!-- Product Search -->
@@ -74,7 +127,7 @@
                 action="javascript:void(0);">
 
                 <select id="search_category"
-                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer ">
+                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer " name="category_id">
                     <option value="all" selected>All Categories</option>
                     @foreach ($featured_categories as $category)
                         <option value="{{ $category->id }}">{{ $category->title }}</option>
@@ -89,7 +142,7 @@
 
             <!-- AJAX Results -->
             <div id="search_results_container"
-                class="absolute w-full bg-white border border-gray-200 mt-2 rounded-md shadow-md hidden z-50">
+                class="absolute w-full bg-white border  mt-2 rounded-md shadow-md hidden z-50">
                 <div id="search_results" class="grid grid-cols-2 md:grid-cols-3 gap-3 p-3"></div>
             </div>
         </div>
@@ -125,6 +178,8 @@
         </div>
     </div>
 </header>
+
+
 <script>
     let lastScroll = 0;
     const header = document.querySelector('header');
@@ -144,5 +199,4 @@
         lastScroll = currentScroll;
     });
     // console.log(('.cart_count_1').length);
-
 </script>

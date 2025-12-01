@@ -58,12 +58,15 @@ class CategoryController extends Controller
             'image' => 'nullable',
             'banner' => 'nullable',
         ]);
-        
+
 
         $category = new Category;
         $category->title = $request->title;
         $category->is_featured = $request->is_featured;
         $category->is_menu_active = $request->is_menu_active;
+        $category->is_menu_active = $request->is_menu_active;
+        $category->is_index = $request->is_index;
+        $category->color_code = $request->color_code;
         $category->menu_position = $request->menu_position;
         if ($request->position != NULL) {
             $category->position = $request->position;
@@ -113,6 +116,7 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        
         if (Auth::user()->type == 1) {
             $category = Category::find($id);
             if (!is_null($category)) {
@@ -158,6 +162,8 @@ class CategoryController extends Controller
         $category->position = $request->position;
         $category->is_featured = $request->is_featured;
         $category->is_menu_active = $request->is_menu_active;
+        $category->is_index = $request->is_index;
+        $category->color_code = $request->color_code;
         $category->menu_position = $request->menu_position;
         $category->is_active = $request->is_active;
 

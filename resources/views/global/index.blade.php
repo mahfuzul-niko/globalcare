@@ -19,6 +19,19 @@
     @include('global.inc.side-bar')
 @endsection
 @section('content')
+    <style>
+        .see-all-btn {
+            background: transparent;
+            border: 1px solid #0e7673;
+            color: #0e7673 !important;
+        }
+
+        .see-all-btn:hover {
+            background: #0e7673;
+            color: #ffffff !important;
+        }
+    </style>
+
     <!-- banner Carousel -->
     <div class="bannerCarousel">
         <div class="owl-carousel owl-theme rounded-lg overflow-hidden">
@@ -188,760 +201,7 @@
     </div>
 
 
-    {{-- <!-- Product List -->
-    <div class="categorySlider product-list-wrapper bg-[#E6CCCD]">
-        <div class="product-list-title">
-            <div>
-                <h2 class="text-[#820003]">Flash Sale</h2>
-                <p class="text-[#820003]">
-                    Up to <b>76%</b> discount for limited time 🔥
-                </p>
-            </div>
-            <a href="#"
-                class="text-[#820003] bg-transparent border border-[#820003] hover:bg-[#820003] hover:text-white transition duration-200">See
-                All
-            </a>
-        </div>
-        <div class="product-list mt-14">
-            <div class="owl-carousel owl-theme">
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-1.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Oxygen Mask Child</h4>
-                            </div>
 
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-2.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Stainless still manual Noise</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-1.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Oxygen Mask Child</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-2.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Stainless still manual Noise</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-1.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Oxygen Mask Child</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-2.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Stainless still manual Noise</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-1.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Oxygen Mask Child</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-2.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Stainless still manual Noise</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        $(".owl-carousel").owlCarousel({
-            loop: true,
-            margin: 10,
-            nav: true,
-            dots: false,
-            responsive: {
-                0: {
-                    items: 2,
-                },
-                640: {
-                    items: 3,
-                },
-                768: {
-                    items: 4,
-                },
-                1280: {
-                    items: 5,
-                },
-                1440: {
-                    items: 6,
-                },
-            },
-        });
-    </script> --}}
-
-    {{-- <!-- How to Order -->
-    <div class="order-guide bg-[#E5F3F3]">
-        <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-y-5 gap-x-2">
-            <div class="order-guide-content">
-                <h1>আরোগ্য থেকে অর্ডার কিভাবে করবেন?</h1>
-                <ul>
-                    <li>প্রেস্ক্রিপশনের ছবি আপলোড করুন অথবা ঔষধ সার্চ করে কিনুন।</li>
-                    <li>
-                        আমাদের 'A Grade Pharmacist' আপনাকে ফোন করে অর্ডার কনফার্ম করবেন।
-                    </li>
-                    <li>১৮-৪৮ ঘন্টার মধ্য আপনার ডেলিভারি বুঝে নিন।</li>
-                </ul>
-                <p>ডাউনলোড করুন আরোগ্য অ্যাপ, আর উপভোগ করুন আকর্ষণীয় মূল্যছাড়।</p>
-
-                <div class="flex gap-2">
-                    <a href="#" class="block">
-                        <img src="{{ asset('global/assets') }}/images/google_play.png" class="w-full" alt="Google Play" />
-                    </a>
-                    <a href="#" class="block">
-                        <img src="{{ asset('global/assets') }}/images/apple_store.png" class="w-full" alt="App Store" />
-                    </a>
-                </div>
-            </div>
-            <div class="order-guide-video relative cursor-pointer" id="orderGuideVideo">
-                <img src="{{ asset('global/assets') }}/images/howToVideo.png" alt="" class="w-full" />
-                <div class="play-icon-animated absolute inset-0 flex items-center justify-center">
-                    <span class="play-pulse"></span>
-                    <span class="play-icon">
-                        <svg width="70" height="70" viewBox="0 0 70 70" fill="none">
-                            <circle cx="35" cy="35" r="35" fill="#FF4B5C" fill-opacity="0.7" />
-                            <polygon points="28,22 52,35 28,48" fill="#fff" />
-                        </svg>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-    {{-- <!-- Defend Against Covid -->
-    <div class="categorySlider product-list-wrapper">
-        <div class="product-list-title">
-            <div>
-                <h2>Defend Against Covid-19</h2>
-                <p>Gear Up Against New Variants</p>
-            </div>
-            <a href="#"
-                class="text-primary bg-transparent border border-primary hover:bg-primary hover:text-white transition duration-200">See
-                All
-            </a>
-        </div>
-        <div class="product-list mt-14">
-            <div class="owl-carousel owl-theme">
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-3.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask Surgical</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-4.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Surgical Mask 3 Layers</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-5.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask KN95</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-3.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask Surgical</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-4.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Surgical Mask 3 Layers</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-5.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask KN95</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-3.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask Surgical</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-4.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Surgical Mask 3 Layers</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-                <div class="item">
-                    <a href="#" class="product-list-card">
-                        <div class="product-list-card-img relative">
-                            <img src="{{ asset('global/assets') }}/images/product-5.webp" alt="" />
-                            <div class="product-discount">71% Off</div>
-                        </div>
-                        <div class="p-2 product-content-wrapper">
-                            <div class="delivery-time">
-                                <img src="{{ asset('global/assets') }}/images/icons/roket.svg" alt="" />
-                                <span>12-24 Hours</span>
-                            </div>
-                            <div class="product-content">
-                                <h4>Face Mask KN95</h4>
-                            </div>
-
-                            <div class="product-rating">
-                                <div class="rating-star">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                </div>
-                                <p>(5)</p>
-                            </div>
-                            <div class="product-btm">
-                                <div class="product-price">
-                                    <p>৳ 100</p>
-                                    <h4>৳ 100</h4>
-                                </div>
-                                <div class="product-btn">
-                                    <button>Add</button>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <script>
-        $(".owl-carousel").owlCarousel({
-            loop: true,
-            margin: 10,
-            nav: true,
-            dots: false,
-            responsive: {
-                0: {
-                    items: 2,
-                },
-                640: {
-                    items: 3,
-                },
-                768: {
-                    items: 4,
-                },
-                1280: {
-                    items: 5,
-                },
-                1440: {
-                    items: 6,
-                },
-            },
-        });
-    </script> --}}
 
     <!-- trending products Product -->
     <div class="categorySlider product-list-wrapper">
@@ -950,8 +210,7 @@
                 <h2>Trending Products Items</h2>
                 <p>Gear Up Against Trending Products</p>
             </div>
-            <a href="{{ route('products') }}"
-                class="text-primary bg-transparent border border-primary hover:bg-primary hover:text-white transition duration-200">See
+            <a href="{{ route('products') }}" class="see-all-btn">See
                 All
             </a>
         </div>
@@ -964,6 +223,48 @@
             </div>
         </div>
     </div>
+    @foreach ($index_categories as $category)
+        <!-- Category: {{ $category->title }} -->
+        <div class="categorySlider product-list-wrapper" style="background-color: {{ $category->color_code }};">
+            <div class="product-list-title">
+                <div>
+                    <h2>{{ $category->title }}</h2>
+                    <p>Explore Our Best {{ $category->title }} Products</p>
+                </div>
+                <a href="{{ route('products', ['category_id' => $category->id]) }}" class="see-all-btn" style="">
+                    See All
+                </a>
+            </div>
+            <div class="product-list mt-14">
+                <div class="owl-carousel owl-theme">
+                    @foreach ($category->products()->take(10)->get() as $product)
+                        @include('global.inc.card-product', ['product' => $product])
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endforeach
+    <div class="categorySlider product-list-wrapper">
+        <div class="product-list-title">
+            <div>
+                <h2>Trending Products Items</h2>
+                <p>Gear Up Against Trending Products</p>
+            </div>
+            <a href="{{ route('products') }}" class="see-all-btn">See
+                All
+            </a>
+        </div>
+        <div class="product-list mt-14">
+            <div class="owl-carousel owl-theme">
+                @foreach ($trending_products as $product)
+                    @include('global.inc.card-product', ['product' => $product])
+                @endforeach
+
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Featured Brands -->
     <div class="categorySlider px-2 lg:px-0 py-6 lg:py-10">
@@ -1010,8 +311,8 @@
                 <h2>Featured Products </h2>
                 <p>Gear Up With Our Featured Products</p>
             </div>
-            <a href="{{ route('products') }}"
-                class="text-primary bg-transparent border border-primary hover:bg-primary hover:text-white transition duration-200">See All
+            <a href="{{ route('products') }}" class="see-all-btn">See
+                All
             </a>
         </div>
         <div class="product-list mt-14">
