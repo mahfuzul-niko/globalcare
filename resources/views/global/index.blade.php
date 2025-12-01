@@ -186,7 +186,7 @@
     <!-- Category Section -->
     <!-- Category -->
     <div class="category px-2 lg:px-0">
-        <h1 class="text-2xl sm:text-3xl font-semibold mb-4">Category</h1>
+        <h1 class="text-2xl sm:text-3xl font-semibold mb-4">Featured Category</h1>
         <div class="category-list grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
             @foreach ($featured_categories as $category)
                 <a href="{{ route('products', ['category_id' => $category->id]) }} " class="category-item">
@@ -220,6 +220,25 @@
                     @include('global.inc.card-product', ['product' => $product])
                 @endforeach
 
+            </div>
+        </div>
+    </div>
+    <!-- Flash Sale products Product -->
+    <div class="categorySlider product-list-wrapper">
+        <div class="product-list-title">
+            <div>
+                <h2>Flash Sale</h2>
+                <p>Enjoy our limited time discount offer</p>
+            </div>
+            <a href="{{ route('products') }}" class="see-all-btn">See
+                All
+            </a>
+        </div>
+        <div class="product-list mt-14">
+            <div class="owl-carousel owl-theme">
+                @foreach ($flash_products as $product)
+                    @include('global.inc.card-product', ['product' => $product])
+                @endforeach
             </div>
         </div>
     </div>

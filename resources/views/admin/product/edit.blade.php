@@ -286,7 +286,7 @@
 
 								<label for="todays_deal" class="mr-3">
 									<input type="checkbox" name="todays_deal" value="1" {{ $product->todays_deal == 1 ? 'checked' : '' }} id="todays_deal">
-									Today's Deal
+									Flash Deal
 								</label>
 
 							</div>

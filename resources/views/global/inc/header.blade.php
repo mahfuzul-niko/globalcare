@@ -127,7 +127,8 @@
                 action="javascript:void(0);">
 
                 <select id="search_category"
-                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer " name="category_id">
+                    class="bg-[#F7FAFC] px-2 py-2 md:py-0 text-sm font-medium text-gray-700 outline-none cursor-pointer "
+                    name="category_id">
                     <option value="all" selected>All Categories</option>
                     @foreach ($featured_categories as $category)
                         <option value="{{ $category->id }}">{{ $category->title }}</option>
@@ -155,9 +156,19 @@
             <a @if (Auth::check()) href="{{ route('customer.account') }}" @else href="{{ route('login') }}" @endif
                 class="flex items-center justify-center hover:bg-hover p-1 sm:p-2 rounded-md transition duration-200 cursor-pointer">
                 <div
-                    class="min-w-10 h-10 sm:min-w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                    <i class="fa-solid fa-user text-gray-500"></i>
+                    class="min-w-10 h-10 sm:min-w-12 sm:h-12 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                    @auth
+                        @if (Auth::user()->image)
+                            <img src="{{ asset('images/customer/' . Auth::user()->image) }}" class=""
+                                alt="User Image" style="width: 40px;" />
+                        @else
+                            <i class="fa-solid fa-user text-gray-500 text-lg"></i>
+                        @endif
+                    @else
+                        <i class="fa-solid fa-user text-gray-500 text-lg"></i>
+                    @endauth
                 </div>
+
                 <div class="hidden lg:flex flex-col">
                     @auth
                         <span class="text-sm text-gray-500">Hello,

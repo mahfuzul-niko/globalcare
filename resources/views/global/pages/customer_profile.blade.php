@@ -33,8 +33,8 @@
 @section('content')
     <style>
         /* ===========================
-                               PREMIUM DASHBOARD DESIGN
-                               =========================== */
+                                   PREMIUM DASHBOARD DESIGN
+                                   =========================== */
 
         .dashpro-section {
             padding: 50px 0;
@@ -72,7 +72,7 @@
 
         .dashpro-card {
             /* display: flex;
-                        align-items: center; */
+                            align-items: center; */
             gap: 18px;
             padding: 22px;
             background: #fff;
@@ -122,8 +122,8 @@
         }
 
         /* ===========================
-                   DASHBOARD-PRO FILES
-                   =========================== */
+                       DASHBOARD-PRO FILES
+                       =========================== */
 
         .dashpro-card.dashpro-form-card {
             padding: 30px;
@@ -215,8 +215,8 @@
         }
 
         /* ----------------------------
-               DASHBOARD & PROFILE RESPONSIVE FIX
-            ----------------------------- */
+                   DASHBOARD & PROFILE RESPONSIVE FIX
+                ----------------------------- */
 
         /* Adjust grid for small screens */
         @media (max-width: 768px) {
@@ -326,7 +326,7 @@
                                     <input type="file" id="image" name="image" class="dashpro-input">
                                     @if (Auth::user()->image)
                                         <img src="{{ asset('images/customer/' . Auth::user()->image) }}"
-                                            class="dashpro-profile-img mt-2">
+                                            class="dashpro-profile-img mt-2" >
                                     @endif
                                 </div>
 

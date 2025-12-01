@@ -74,12 +74,12 @@ class PageController extends Controller
         $featured_categories = Category::where('is_featured', 1)->orderBy('position', 'ASC')->get(['id', 'title', 'image']);
         $index_categories = Category::where('is_index', 1)->with('products')->orderBy('position', 'ASC')->get(['id', 'title', 'image', 'color_code']);
         
-        //$todays_deals = Product::where(['is_active'=>1, 'todays_deal'=>1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
+        $flash_products = Product::where(['is_active'=>1, 'todays_deal'=>1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         $featured_products = Product::where(['is_active' => 1, 'is_featured' => 1])->orderBy('id', 'DESC')->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         $trending_products = Product::orderBy('id', 'DESC')->where(['is_active' => 1, 'is_tranding' => 1])->inRandomOrder()->limit(10)->get(['id', 'discount_type', 'discount_amount', 'type', 'title', 'thumbnail_image']);
         //$featured_brands = Brand::where(['is_featured'=>1])->orderBy('position', 'ASC')->get();
         $blogs = Blog::where('type', 'blog')->orderBy('id', 'DESC')->limit(4)->get(['id', 'title', 'image', 'created_at']);
-        return view('global.index', compact('trending_products', 'featured_categories', 'sliders', 'brands', 'sliderSideBanner', 'featured_products', 'blogs','index_categories'));
+        return view('global.index', compact('trending_products', 'featured_categories', 'sliders', 'brands', 'sliderSideBanner', 'featured_products', 'blogs','index_categories','flash_products'));
         //return view('pages.index', compact('products', 'categories', 'featured_categories', 'deals', 'random_products', 'sliders', 'page', 'top_sales'));
 
     }
